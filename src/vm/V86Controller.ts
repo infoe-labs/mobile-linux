@@ -102,14 +102,19 @@ export class V86Controller extends EventTarget {
         this.progress = Math.round(((i + 1) / names.length) * 100);
         this.dispatchEvent(new Event('change'));
       }
-      this.status('preparing', 'Opening the persistent Alpine disk…');
+      this.status('preparing', 'Preparing the compressed Alpine disk…');
       const seed = await new Response(
         new Blob([assets['rootfs.img.gzip.bin']])
           .stream()
           .pipeThrough(new DecompressionStream('gzip')),
       ).arrayBuffer();
-      this.disk = await PersistentDisk.open(seed, this.image, () =>
-        this.fail('Disk write failed. VM paused; storage may be full. Export a recovery backup.'),
+      this.status('preparing', 'Opening the persistent IndexedDB disk…');
+      this.disk = await PersistentDisk.open(
+        seed,
+        this.image,
+        () =>
+          this.fail('Disk write failed. VM paused; storage may be full. Export a recovery backup.'),
+        assets['rootfs.img.gzip.bin'],
       );
       this.bridge = new GuestBridge(
         (text) => this.emulator?.serial_send_bytes(1, new TextEncoder().encode(text)),
