@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { indexedDB } from 'fake-indexeddb';
+import { gzipSync } from 'node:zlib';
 import { canTransition } from '../src/vm/state.ts';
 import { encode, decode, parseEntries, requestLine } from '../src/vm/protocol.ts';
 import { PersistentDisk } from '../src/storage/PersistentDisk.ts';
@@ -31,9 +32,25 @@ test('disk writes persist independently of RAM snapshots and incompatible images
   let failed = false;
   const seed = new ArrayBuffer(8192);
   new Uint8Array(seed)[100] = 45;
-  const disk = await PersistentDisk.open(seed, 'test-image', () => {
-    failed = true;
-  });
+  const compressedSeed = gzipSync(new Uint8Array(seed));
+  const originalCompression = globalThis.CompressionStream;
+  globalThis.CompressionStream = undefined;
+  let disk;
+  try {
+    disk = await PersistentDisk.open(
+      seed,
+      'test-image',
+      () => {
+        failed = true;
+      },
+      compressedSeed.buffer.slice(
+        compressedSeed.byteOffset,
+        compressedSeed.byteOffset + compressedSeed.byteLength,
+      ),
+    );
+  } finally {
+    globalThis.CompressionStream = originalCompression;
+  }
   await new Promise((resolve) =>
     disk.set(4090, new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9]), resolve),
   );

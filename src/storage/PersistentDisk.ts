@@ -16,7 +16,12 @@ export class PersistentDisk {
     this.onFailure = onFailure;
     this.byteLength = buffer.byteLength;
   }
-  static async open(seed: ArrayBuffer, image: string, onFailure: () => void) {
+  static async open(
+    seed: ArrayBuffer,
+    image: string,
+    onFailure: () => void,
+    compressedSeed?: ArrayBuffer,
+  ) {
     const disk = new PersistentDisk(seed, onFailure);
     const name = storageScope({
       appId: appConfig.appId,
@@ -50,7 +55,8 @@ export class PersistentDisk {
       ).arrayBuffer();
       if (disk.buffer.byteLength !== disk.byteLength)
         throw new Error('Stored disk seed has an invalid size.');
-    } else
+    } else if (compressedSeed) compressed = compressedSeed.slice(0);
+    else
       compressed = await new Response(
         new Blob([seed]).stream().pipeThrough(new CompressionStream('gzip')),
       ).arrayBuffer();
