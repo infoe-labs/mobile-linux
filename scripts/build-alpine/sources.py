@@ -2,14 +2,32 @@
 """Collect exact Alpine packaging and checksum-verified sources alongside binaries.
 No APKBUILD is executed. Every checksum-listed source must be present or this fails.
 """
-import hashlib, html, json, pathlib, re, tarfile, urllib.request
+import hashlib, html, json, pathlib, re, tarfile, time, urllib.error, urllib.request
 ROOT=pathlib.Path(__file__).resolve().parents[2]
 CACHE=ROOT/'.asset-cache/sources';OUT=ROOT/'public/sources'
-def fetch(url,path):
- if not path.exists():
-  path.parent.mkdir(parents=True,exist_ok=True)
-  with urllib.request.urlopen(url,timeout=120) as response: path.write_bytes(response.read())
- return path
+def fetch(url,path,*,fallback_urls=(),validate=None):
+ if path.exists() and (validate is None or validate(path)):
+  return path
+ path.parent.mkdir(parents=True,exist_ok=True)
+ partial=path.with_name(path.name+'.part')
+ for candidate in (url,*fallback_urls):
+  for attempt in range(3):
+   try:
+    with urllib.request.urlopen(candidate,timeout=120) as response:
+     partial.write_bytes(response.read())
+    if validate is not None and not validate(partial):
+     break
+    partial.replace(path)
+    return path
+   except urllib.error.HTTPError as error:
+    # Access-policy errors are not transient. Try the alternate upstream.
+    if error.code not in (408,429,500,502,503,504): break
+   except (urllib.error.URLError,TimeoutError,OSError):
+    pass
+   finally:
+    partial.unlink(missing_ok=True)
+   if attempt<2: time.sleep(2**attempt)
+ raise RuntimeError('Unable to acquire a required source asset; no incomplete download was cached.')
 
 def main():
  OUT.mkdir(parents=True,exist_ok=True);CACHE.mkdir(parents=True,exist_ok=True)
@@ -18,8 +36,9 @@ def main():
  records=[]
  for origin,commit in sorted(origins.items()):
   print('Collecting corresponding sources:',origin,flush=True)
-  url=f'https://gitlab.alpinelinux.org/alpine/aports/-/archive/{commit}/aports-{commit}.tar.gz?path=main/{origin}'
-  archive=fetch(url,CACHE/(origin+'-'+commit+'.tar.gz'))
+  url=f'https://codeload.github.com/alpinelinux/aports/tar.gz/{commit}'
+  fallback=f'https://gitlab.alpinelinux.org/alpine/aports/-/archive/{commit}/aports-{commit}.tar.gz'
+  archive=fetch(url,CACHE/('aports-'+commit+'.tar.gz'),fallback_urls=(fallback,),validate=tarfile.is_tarfile)
   dest=OUT/origin;dest.mkdir(exist_ok=True)
   with tarfile.open(archive) as t:
    for entry in t:
@@ -51,4 +70,7 @@ def main():
  links=''.join(f'<li><a href="{html.escape(path,quote=True)}">{html.escape(path)}</a></li>' for path in files)
  (OUT/'index.html').write_text('<!doctype html><meta charset="utf-8"><title>Alpine Pocket corresponding sources</title><h1>Corresponding sources</h1><p>Exact packaging recipes, patches, configurations and upstream source archives for the bundled Alpine image and SeaBIOS. Source files are not cached automatically. See manifest.json for hashes and versions.</p><a href="manifest.json">Source manifest</a><ul>'+links+'</ul>')
  print('Collected source files:',len(files),flush=True)
-if __name__=='__main__': main()
+if __name__=='__main__':
+ try: main()
+ except Exception:
+  raise SystemExit('Source collection failed. Check upstream availability and source checksums; incomplete downloads are not published.') from None

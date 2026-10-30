@@ -20,3 +20,6 @@ public/vm/*
 public/ai/
 
 public/sources/
+
+# Python helper bytecode contains checkout-specific metadata.
+__pycache__/
