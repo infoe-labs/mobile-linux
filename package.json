@@ -1,0 +1,56 @@
+{
+  "name": "alpine-pocket",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --experimental-strip-types --test tests/*.test.js",
+    "test:e2e": "playwright test",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run test:e2e",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src tests/*.test.js",
+    "assets": "python3 scripts/build-alpine/build.py",
+    "sbom": "node scripts/sbom.mjs",
+    "format": "prettier --write src scripts/*.mjs tests *.js *.json .github/workflows/*.yml",
+    "prebuild": "node scripts/check-assets.mjs"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "4.3.2",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@xterm/addon-fit": "0.11.0",
+    "@xterm/addon-search": "0.16.0",
+    "@xterm/xterm": "6.0.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwind-merge": "^3.6.0",
+    "v86": "0.5.472"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "^1.64.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "eslint": "10.14.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "fake-indexeddb": "^6.2.4",
+    "globals": "17.13.0",
+    "prettier": "3.9.10",
+    "tailwindcss": "^4.3.3",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1",
+    "vite": "^8.3.5",
+    "vite-plugin-pwa": "^2.0.0",
+    "workbox-core": "^7.4.0",
+    "workbox-precaching": "^7.4.0"
+  }
+}

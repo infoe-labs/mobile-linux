@@ -1,0 +1,53 @@
+#!/bin/ash
+# Dedicated COM2 protocol. Paths and content are base64 data, never shell source.
+b64() { base64 | tr -d '\n'; }
+reply() { printf 'AP1\t%s\t%s\t%s\n' "$id" "$1" "$2"; }
+printf 'AP1\t0\tREADY\t1\n'
+while IFS="$(printf '\t')" read -r id op encoded data; do
+  case "$id" in ''|*[!0-9]*) continue;; esac
+  # Prefix prevents command substitution stripping trailing newlines in filenames.
+  path=$(printf '%s' "$encoded" | base64 -d; printf '.')
+  path=${path%.}
+  case "$path" in /*) ;; *) reply ERR 'absolute-path-required'; continue;; esac
+  case "$op" in
+    COMMANDS)
+      result=$(
+        for entry in /bin/* /sbin/* /usr/bin/* /usr/sbin/*; do
+          [ -x "$entry" ] && [ ! -d "$entry" ] || continue
+          name=${entry##*/}
+          case "$name" in *[!a-zA-Z0-9._+-]*|'') continue;; esac
+          printf '%s\n' "$name"
+        done | b64
+      )
+      reply OK "$result";;
+    LIST)
+      if [ ! -d "$path" ]; then reply ERR 'not-directory'; continue; fi
+      result=$(
+        find "$path" -mindepth 1 -maxdepth 1 -print0 2>/dev/null |
+        while IFS= read -r -d '' entry; do
+          name=${entry##*/}
+          encodedname=$(printf '%s' "$name" | b64)
+          meta=$(stat -c '%s\t%a\t%F' -- "$entry" 2>/dev/null) || continue
+          printf '%s\t%b\n' "$encodedname" "$meta"
+        done | b64
+      )
+      reply OK "$result";;
+    READ)
+      [ -f "$path" ] && [ "$(stat -c %s -- "$path")" -le 1048576 ] && reply OK "$(base64 "$path" | tr -d '\n')" || reply ERR 'read-failed-or-over-1MiB';;
+    WRITE)
+      tmp=$(mktemp "${path}.pocket.XXXXXX") || { reply ERR 'create-temp-failed'; continue; }
+      if printf '%s' "$data" | base64 -d >"$tmp" && chmod "$(stat -c %a -- "$path" 2>/dev/null || printf 644)" "$tmp" && mv -f -- "$tmp" "$path"; then sync; reply OK ''; else reply ERR 'write-failed'; fi
+      rm -f -- "$tmp";;
+    MKDIR) mkdir -- "$path" && sync && reply OK '' || reply ERR 'mkdir-failed';;
+    DELETE) rm -r -- "$path" && sync && reply OK '' || reply ERR 'delete-failed';;
+    RENAME)
+      dest=$(printf '%s' "$data" | base64 -d; printf '.'); dest=${dest%.}
+      if [ -e "$dest" ] || [ -L "$dest" ]; then reply ERR 'destination-exists'; continue; fi
+      case "$dest" in /*) mv -n -- "$path" "$dest" && sync && reply OK '' || reply ERR 'rename-failed';; *) reply ERR 'absolute-path-required';; esac;;
+    RESIZE)
+      rows=${data%,*}; cols=${data#*,}
+      case "$data" in *[!0-9,]*|'') reply ERR 'invalid-size';; *) stty -F /dev/ttyS0 rows "$rows" cols "$cols" && reply OK '' || reply ERR 'resize-failed';; esac;;
+    SYNC) sync; reply OK '';;
+    *) reply ERR 'unknown-operation';;
+  esac
+done

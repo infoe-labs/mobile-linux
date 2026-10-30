@@ -1,0 +1,22 @@
+.githooks/
+.env
+.secrets/
+*.swp
+/infoe-bots
+
+# Frontend dependencies, generated output, and local test artifacts
+node_modules/
+dist/
+test-results/
+playwright-report/
+.env.*
+!.env.example
+*.local
+
+.asset-cache/
+public/vm/*
+!public/vm/.gitkeep
+
+public/ai/
+
+public/sources/

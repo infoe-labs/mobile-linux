@@ -1,0 +1,15 @@
+#!/bin/sh
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export HOME=/root TERM=xterm-256color LANG=C.UTF-8
+mount -t tmpfs -o size=16m tmpfs /tmp
+mount -t tmpfs -o size=2m tmpfs /run
+hostname alpine-pocket
+stty -F /dev/ttyS0 115200 rows 30 cols 80
+stty -F /dev/ttyS1 115200 raw -echo -ixon -ixoff
+/sbin/pocket-bridge </dev/ttyS1 >/dev/ttyS1 2>/dev/null &
+(while sleep 2; do sync; done) &
+printf '\nAlpine Pocket · local Linux\n' >/dev/ttyS0
+cd /root
+while :; do
+  setsid sh -c 'exec /bin/ash -l </dev/ttyS0 >/dev/ttyS0 2>&1'
+done

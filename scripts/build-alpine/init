@@ -1,0 +1,19 @@
+#!/bin/sh
+mount -t devtmpfs devtmpfs /dev
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+modprobe sd_mod
+modprobe ext4
+mkdir -p /newroot
+for i in $(seq 1 100); do
+  [ -b /dev/sda ] && break
+  sleep .1
+done
+if ! mount -t ext4 -o rw,noatime /dev/sda /newroot; then
+  echo 'Persistent root could not be mounted. Recovery shell; disk is preserved.' >/dev/ttyS0
+  exec /bin/sh </dev/ttyS0 >/dev/ttyS0 2>&1
+fi
+mount --move /dev /newroot/dev
+mount --move /proc /newroot/proc
+mount --move /sys /newroot/sys
+exec switch_root /newroot /sbin/pocket-init
