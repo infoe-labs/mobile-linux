@@ -37,8 +37,9 @@ def main():
  for origin,commit in sorted(origins.items()):
   print('Collecting corresponding sources:',origin,flush=True)
   url=f'https://codeload.github.com/alpinelinux/aports/tar.gz/{commit}'
+  api=f'https://gitlab.alpinelinux.org/api/v4/projects/alpine%2Faports/repository/archive.tar.gz?sha={commit}'
   fallback=f'https://gitlab.alpinelinux.org/alpine/aports/-/archive/{commit}/aports-{commit}.tar.gz'
-  archive=fetch(url,CACHE/('aports-'+commit+'.tar.gz'),fallback_urls=(fallback,),validate=tarfile.is_tarfile)
+  archive=fetch(url,CACHE/('aports-'+commit+'.tar.gz'),fallback_urls=(api,fallback),validate=tarfile.is_tarfile)
   dest=OUT/origin;dest.mkdir(exist_ok=True)
   with tarfile.open(archive) as t:
    for entry in t:

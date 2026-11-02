@@ -14,7 +14,7 @@ npm run build
 ```
 
 The build downloads checksum-pinned Alpine 3.23.7 x86 minirootfs and linux-virt
-6.18.59-r0, builds a 64 MiB ext4 root, and generates an initramfs with the modules
+6.18.60-r0, builds a 64 MiB ext4 root, and generates an initramfs with the modules
 needed for IDE/ext4 boot. Firmware is pinned by source commit and SHA-256. WASM
 comes from the exact npm lockfile. `public/vm/assets.json` records every output
 hash and input URL. Generated binaries and source bundles are excluded from Git.
@@ -28,7 +28,7 @@ vi, top, mount, df and apk are actual Alpine/BusyBox programs.
 `public/vm/packages.json` records all installed Alpine package versions, licenses,
 origins and packaging commits. The image retains its apk database. The source
 collector fetches commit-pinned archives from Alpine’s GitHub mirror, with the
-Alpine GitLab archive service as a fallback, and extracts each exact packaging
+Alpine GitLab repository archive API and web archive service as fallbacks, and extracts each exact packaging
 directory (APKBUILD, patches, configs),
 then all checksum-listed sources from Alpine's source mirror and verifies SHA-512.
 It also includes SeaBIOS rel-1.16.2 and the exact v86 source. It does not execute
@@ -63,3 +63,13 @@ intentionally rebuilt image. No curated extra package set is bundled yet.
 Downloads use bounded retries for transient failures and atomic cache installation.
 Packaging archives are validated before caching; HTTP access-policy failures try
 the alternate upstream. Source checksums remain mandatory on both paths.
+
+VM input caches are keyed by the pinned SHA-256. Downloads are validated before
+atomic installation; incomplete or mismatched files never enter the cache. Alpine
+removes older APKs from its rolling package directory, so a 404 requires a reviewed
+pin update and matching corresponding sources, never an unverified latest fallback.
+Kernel package versions, licenses and source commits are read from the verified
+APK control metadata rather than maintained separately in the image builder.
+The 6.18.60 kernel update keeps the existing disk schema and app/storage IDs.
+Existing saved disks are retained; no snapshot compatibility across kernel updates
+is promised. Export important guest files before restoring older machine snapshots.

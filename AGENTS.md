@@ -96,3 +96,8 @@ local and must not permit personal identities.
 - Run `npm test`, `npm run build`, and `npm run test:e2e` for relevant changes.
   Verify non-root deployment builds and offline reloads. Never represent browser
   emulation as real Android/iOS installation testing.
+
+## Shared repository standards
+
+Read `docs/SHARED_STANDARDS.md` for the canonical infoe-labs guidelines.
+Preserve stronger project-specific privacy, review, test and release rules.

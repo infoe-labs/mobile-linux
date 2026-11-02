@@ -38,3 +38,17 @@ class Downloads(unittest.TestCase):
                     sources.fetch('https://primary.invalid', target)
             self.assertFalse(target.exists())
             self.assertFalse(target.with_name('asset.part').exists())
+
+    def test_multiple_providers_validate_before_accepting_archive(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = pathlib.Path(directory) / 'archive'
+            rejected = urllib.error.HTTPError('https://primary.invalid', 404, 'missing', None, None)
+            responses = [rejected, io.BytesIO(b'HTML challenge'), io.BytesIO(b'archive')]
+            with patch.object(sources.urllib.request, 'urlopen', side_effect=responses) as request:
+                sources.fetch('https://primary.invalid', target,
+                              fallback_urls=('https://api.invalid', 'https://archive.invalid'),
+                              validate=lambda p: p.read_bytes() == b'archive')
+            self.assertEqual([call.args[0] for call in request.call_args_list],
+                             ['https://primary.invalid', 'https://api.invalid', 'https://archive.invalid'])
+            self.assertEqual(target.read_bytes(), b'archive')
+            self.assertFalse(target.with_name('archive.part').exists())
