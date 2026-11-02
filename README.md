@@ -1,5 +1,7 @@
 # Alpine Pocket
 
+**Live site: [GitHub Pages](https://infoe-labs.github.io/mobile-linux/)**
+
 A real Alpine Linux computer in a mobile-first, browser-local PWA. MIT-licensed
 application code, built on the requested React/Vite PWA base layer. No account,
 remote VM, tunnel, analytics or inference service.
