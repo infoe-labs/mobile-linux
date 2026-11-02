@@ -28,7 +28,7 @@ vi, top, mount, df and apk are actual Alpine/BusyBox programs.
 `public/vm/packages.json` records all installed Alpine package versions, licenses,
 origins and packaging commits. The image retains its apk database. The source
 collector fetches commit-pinned archives from Alpine’s GitHub mirror, with the
-Alpine GitLab archive service as a fallback, and extracts each exact packaging
+Alpine GitLab repository archive API and web archive service as fallbacks, and extracts each exact packaging
 directory (APKBUILD, patches, configs),
 then all checksum-listed sources from Alpine's source mirror and verifies SHA-512.
 It also includes SeaBIOS rel-1.16.2 and the exact v86 source. It does not execute
