@@ -11128,7 +11128,7 @@
     {
       "type": "operating-system",
       "name": "linux-virt",
-      "version": "6.18.59-r0",
+      "version": "6.18.60-r0",
       "licenses": [
         {
           "license": {
@@ -11136,11 +11136,11 @@
           }
         }
       ],
-      "purl": "pkg:apk/alpine/linux-virt@6.18.59-r0?arch=x86",
+      "purl": "pkg:apk/alpine/linux-virt@6.18.60-r0?arch=x86",
       "properties": [
         {
           "name": "aports.commit",
-          "value": "8604a852cc2f621ad7e77032ab54f066d1ffaad2"
+          "value": "7c0621dbd415d5a9433635a5522c046a1ab1d2a5"
         }
       ]
     }

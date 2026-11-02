@@ -6,7 +6,7 @@ A real Alpine Linux computer in a mobile-first, browser-local PWA. MIT-licensed
 application code, built on the requested React/Vite PWA base layer. No account,
 remote VM, tunnel, analytics or inference service.
 
-This implementation boots Alpine 3.23.7 x86 with kernel 6.18.59-0-virt in v86,
+This implementation boots Alpine 3.23.7 x86 with kernel 6.18.60-0-virt in v86,
 connects xterm to a real ash shell, and persists its ext4 root disk in IndexedDB.
 The file browser operates on guest files through a second serial channel. Optional
 SmolLM2 inference runs in a browser Worker and was verified offline in Chromium.

@@ -16,7 +16,7 @@ BSD-2-Clause; BIOS from the same source revision. SeaBIOS rel-1.16.2 is LGPLv3
 with included third-party portions; see its full source and COPYING files:
 https://github.com/coreboot/seabios/tree/rel-1.16.2.
 
-Generated Alpine assets: Alpine minirootfs 3.23.7 x86 and linux-virt 6.18.59-r0.
+Generated Alpine assets: Alpine minirootfs 3.23.7 x86 and linux-virt 6.18.60-r0.
 Alpine is a distribution, not a blanket license for its packages. Kernel GPL-2.0-only;
 BusyBox GPL-2.0-only; musl MIT. The image builder records input hashes and the
 image contains `/lib/apk/db/installed` for package licenses and origins.
@@ -52,7 +52,7 @@ replace inspection of the bundled binary and image components.
 - scanelf 1.3.8-r2: GPL-2.0-only; origin pax-utils, aports 3912b4fa83437852312ad3c37a00229ff59fab1c
 - ssl_client 1.37.0-r30: GPL-2.0-only; origin busybox, aports 1e823a60eb85606954b3a5af5f8e5bbd1ea680cf
 - zlib 1.3.2-r1: Zlib; origin zlib, aports b92621a82657b055485976b304462bddf9aa9183
-- linux-virt 6.18.59-r0: GPL-2.0-only; origin linux-lts, aports 8604a852cc2f621ad7e77032ab54f066d1ffaad2
+- linux-virt 6.18.60-r0: GPL-2.0-only; origin linux-lts, aports 7c0621dbd415d5a9433635a5522c046a1ab1d2a5
 
 Corresponding packaging, patches, configurations and upstream sources are distributed at [sources/index.html](sources/index.html).
 

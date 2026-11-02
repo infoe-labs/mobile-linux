@@ -5,7 +5,7 @@
 Research date: 2026-10-30. Original implementation on the requested PWA base
 layer. See `docs/MILESTONES.md` for measured verification and outstanding work.
 
-A genuine Alpine 3.23.7 x86 userland runs on Alpine's 6.18.59-0-virt Linux
+A genuine Alpine 3.23.7 x86 userland runs on Alpine's 6.18.60-0-virt Linux
 kernel in v86 0.5.472. Direct kernel/initramfs boot mounts a 64 MiB ext4 IDE disk.
 No shell command is interpreted by the application. Browser xterm input goes to
 COM1; a guest ash process executes it. `uname` and `os-release` were verified

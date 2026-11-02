@@ -1,24 +1,37 @@
 #!/usr/bin/env python3
 """Build a genuine Alpine ext4 root disk and direct-boot initramfs without Docker/root."""
-import gzip, hashlib, json, os, pathlib, shutil, subprocess, tarfile, tempfile, urllib.request
+import gzip, hashlib, json, os, pathlib, shutil, subprocess, tarfile, tempfile
+from sources import fetch
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 OUT = ROOT / 'public/vm'
 CACHE = ROOT / '.asset-cache'
 INPUTS = {
  'rootfs.tar.gz': ('https://dl-cdn.alpinelinux.org/alpine/v3.23/releases/x86/alpine-minirootfs-3.23.7-x86.tar.gz', '41978b24040bf632b4d60e865a39ad1f57372ca202c011cde41ef36a7eed8dd3'),
- 'kernel.apk': ('https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/linux-virt-6.18.59-r0.apk', '5791a329db01f3c681c6ffb519be566c9a7026e97d4549eb15a0711a008d32fb'),
+ 'kernel.apk': ('https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/linux-virt-6.18.60-r0.apk', '41fd208494fc74b38e46a13445bc7c7135e762ee04540cc9222d82bfee7a7ba4'),
 }
+def download_asset(name, url, expected):
+ # A pin change must not reuse a previous package under the same cache name.
+ path = CACHE / (name + '.' + expected)
+ return fetch(url, path, validate=lambda p: hashlib.sha256(p.read_bytes()).hexdigest() == expected)
+
+def kernel_package_record(archive):
+ # APKs concatenate signature, control and data tar streams. Read the verified
+ # control metadata so the SBOM and corresponding sources follow the actual APK.
+ with tarfile.open(archive, ignore_zeros=True) as package:
+  metadata = package.extractfile('.PKGINFO').read().decode()
+ fields = dict(line.split(' = ', 1) for line in metadata.splitlines() if ' = ' in line)
+ if fields.get('pkgname') != 'linux-virt' or fields.get('arch') != 'x86':
+  raise RuntimeError('Unexpected kernel package identity')
+ return {key: fields[field] for key, field in {'P':'pkgname','V':'pkgver','A':'arch','L':'license','o':'origin','c':'commit'}.items()}
+
 def main():
  OUT.mkdir(parents=True, exist_ok=True); CACHE.mkdir(exist_ok=True)
- for name, (url, expected) in INPUTS.items():
-  p = CACHE / name
-  if not p.exists(): urllib.request.urlretrieve(url, p)
-  if hashlib.sha256(p.read_bytes()).hexdigest() != expected: raise RuntimeError('Asset digest mismatch: ' + name)
+ inputs = {name: download_asset(name, url, expected) for name, (url, expected) in INPUTS.items()}
  with tempfile.TemporaryDirectory(prefix='pocket-build-') as tmp:
   tmp = pathlib.Path(tmp); fs = tmp / 'fs'; kernel = tmp / 'kernel'; init = tmp / 'init'
   for target, archive in [(fs,'rootfs.tar.gz'),(kernel,'kernel.apk')]:
    target.mkdir()
-   with tarfile.open(CACHE / archive) as t: t.extractall(target, filter='fully_trusted')
+   with tarfile.open(inputs[archive]) as t: t.extractall(target, filter='fully_trusted')
   shutil.copytree(fs, init, symlinks=True)
   # Keep modules with their dependency metadata. No network/firmware is required.
   shutil.copytree(kernel / 'lib/modules', init / 'lib/modules', symlinks=True)
@@ -37,7 +50,7 @@ def main():
   for record in (fs/'lib/apk/db/installed').read_text().split('\n\n'):
    fields={line[:1]:line[2:] for line in record.splitlines() if len(line)>1 and line[1]==':' and line[:1] in ['P','V','A','L','o','c','U']}
    if 'P' in fields: package_records.append(fields)
-  package_records.append({'P':'linux-virt','V':'6.18.59-r0','A':'x86','L':'GPL-2.0-only','o':'linux-lts','c':'8604a852cc2f621ad7e77032ab54f066d1ffaad2'})
+  package_records.append(kernel_package_record(inputs['kernel.apk']))
   (OUT/'packages.json').write_text(json.dumps(package_records,indent=2)+'\n')
   for target, name in [(init / 'init','init'),(fs / 'sbin/pocket-init','pocket-init'),(fs / 'sbin/pocket-bridge','pocket-bridge')]:
    shutil.copyfile(ROOT / 'scripts/build-alpine' / name, target); target.chmod(0o755)
@@ -68,10 +81,8 @@ def main():
  # BIOS pinned to the exact v86 source commit matching the npm package.
  commit='cc37f35c43bf14865d74ad76879ecf9410f69eb1'
  for name in ['seabios.bin','vgabios.bin']:
-  p=CACHE/name
-  if not p.exists(): urllib.request.urlretrieve(f'https://raw.githubusercontent.com/copy/v86/{commit}/bios/{name}',p)
   expected={'seabios.bin':'73e3f359102e3a9982c35fce98eb7cd08f18303ac7f1ba6ebfbe6cdc1c244d98','vgabios.bin':'a4bc0d80cc3ca028c73dafa8fee396b8d054ce87ebd8abfbd31b06b437607880'}[name]
-  if hashlib.sha256(p.read_bytes()).hexdigest()!=expected: raise RuntimeError('BIOS checksum mismatch')
+  p=download_asset(name, f'https://raw.githubusercontent.com/copy/v86/{commit}/bios/{name}', expected)
   shutil.copyfile(p,OUT/name)
  shutil.copyfile(ROOT/'node_modules/v86/build/v86.wasm',OUT/'v86.wasm')
  ort=json.loads((ROOT/'node_modules/onnxruntime-web/package.json').read_text())['version']
@@ -83,5 +94,5 @@ def main():
  for p in sorted(OUT.iterdir()):
   if p.name!='assets.json' and not p.name.startswith('.'): manifest['assets'][p.name]={'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
  (OUT/'assets.json').write_text(json.dumps(manifest,indent=2)+'\n')
- print('Built Alpine 3.23.7 x86 image, kernel 6.18.59, 64 MiB ext4 disk.')
+ print('Built Alpine 3.23.7 x86 image, kernel 6.18.60, 64 MiB ext4 disk.')
 if __name__=='__main__': main()
