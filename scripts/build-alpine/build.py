@@ -9,6 +9,13 @@ INPUTS = {
  'rootfs.tar.gz': ('https://dl-cdn.alpinelinux.org/alpine/v3.23/releases/x86/alpine-minirootfs-3.23.7-x86.tar.gz', '41978b24040bf632b4d60e865a39ad1f57372ca202c011cde41ef36a7eed8dd3'),
  'kernel.apk': ('https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/linux-virt-6.18.60-r0.apk', '41fd208494fc74b38e46a13445bc7c7135e762ee04540cc9222d82bfee7a7ba4'),
 }
+SSH_PACKAGES = {
+ 'dropbear-dbclient': ('2025.88-r1', 'aa89b2fbb7e4d9345594b3f297b149e0f833adc4361c02636b39f0135ffa6163'),
+ 'utmps-libs': ('0.1.3.1-r0', '35940c7c0813542f649e81f49196bdb4bd5364a70ed800583ca5071bf2703de7'),
+ 'skalibs-libs': ('2.14.4.0-r0', 'b25a3c06df435d1d6640654ee2fc48d5cea29deae94e3ded7bfb48f2c4f3ea6f'),
+ 'zlib': ('1.3.2-r1', 'f6a0303e5203a43635d2c8a360a8ef0a6c462d72a123ba96ca82407d5536e2be'),
+}
+RESIZE_PACKAGES = {'e2fsprogs-extra': ('1.47.3-r0', '3b34ca407ec5073498f727405be4ee5365c29db0ca6f03b25de3789dcfcc6f3e'), 'e2fsprogs-libs': ('1.47.3-r0', 'a5c05b94ce57ffc6964e2725ba9da5c84108d2403ccb07ec3c1b727c3ed98b81'), 'libblkid': ('2.41.6-r1', '837d056ab4be1c0ad177a078076f98d3696643d87c668bd1df53037db550126b'), 'libeconf': ('0.8.3-r0', '9cb6ec3718db06ef307a74e1615639bb9592e6b44242599ef148f93103975fe6'), 'libuuid': ('2.41.6-r1', '1ee8265815ff661e734c6470642ea2dbf1b9abe658aae0911244d197b572ab08'), 'e2fsprogs': ('1.47.3-r0', '98c07f04690a52b58e4293db27888eb4afce325f671d3355dc4a7269410700fb'), 'libcom_err': ('1.47.3-r0', '32f390c959c36d06f6e15e591e8081bcb322280c79b95f8be7c8360af8d61b3e')}
 def download_asset(name, url, expected):
  # A pin change must not reuse a previous package under the same cache name.
  path = CACHE / (name + '.' + expected)
@@ -43,7 +50,7 @@ def main():
    wanted.add(name)
    for dependency in deps.get(name,[]): keep(dependency)
   for name in deps:
-   if pathlib.Path(name).name in ['ext4.ko.gz','sd_mod.ko.gz']: keep(name)
+   if pathlib.Path(name).name in ['ext4.ko.gz','sd_mod.ko.gz','virtio_net.ko.gz','virtio_pci.ko.gz']: keep(name)
   for p in modules.rglob('*.ko.gz'):
    if str(p.relative_to(modules)) not in wanted: p.unlink()
   package_records=[]
@@ -51,6 +58,33 @@ def main():
    fields={line[:1]:line[2:] for line in record.splitlines() if len(line)>1 and line[1]==':' and line[:1] in ['P','V','A','L','o','c','U']}
    if 'P' in fields: package_records.append(fields)
   package_records.append(kernel_package_record(inputs['kernel.apk']))
+  # Versioned app-owned payload is installed from initramfs on every cold boot,
+  # including existing disks. It never replaces the disk seed or user SSH files.
+  payload=init/'pocket-ssh'; payload.mkdir()
+  for name,(version,digest) in SSH_PACKAGES.items():
+   archive=download_asset(name+'.apk',f'https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/{name}-{version}.apk',digest)
+   with tarfile.open(archive,ignore_zeros=True) as package:
+    fields=dict(line.split(' = ',1) for line in package.extractfile('.PKGINFO').read().decode().splitlines() if ' = ' in line)
+    record={key:fields[field] for key,field in {'P':'pkgname','V':'pkgver','A':'arch','L':'license','o':'origin','c':'commit'}.items()}
+    if not any((p['P'],p['V'],p['A']) == (record['P'],record['V'],record['A']) for p in package_records): package_records.append(record)
+    for member in package:
+     if member.name.startswith(('lib/','usr/lib/','usr/bin/')): package.extract(member,payload,filter='data')
+  for name,dest in [('pocket-ssh','ssh'),('pocket-ssh-proxy','proxy')]:
+   shutil.copyfile(ROOT/'scripts/build-alpine'/name,payload/dest)
+   (payload/dest).chmod(0o755)
+  for name,(version,digest) in RESIZE_PACKAGES.items():
+   archive=download_asset(name+'.apk',f'https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/{name}-{version}.apk',digest)
+   with tarfile.open(archive,ignore_zeros=True) as package:
+    fields=dict(line.split(' = ',1) for line in package.extractfile('.PKGINFO').read().decode().splitlines() if ' = ' in line)
+    record={key:fields[field] for key,field in {'P':'pkgname','V':'pkgver','A':'arch','L':'license','o':'origin','c':'commit'}.items()}
+    if not any(p['P']==record['P'] for p in package_records): package_records.append(record)
+    for member in package:
+     if member.name.startswith(('lib/','usr/lib/')) or member.name.endswith('/resize2fs'): package.extract(member,init,filter='data')
+  for entry in json.loads((ROOT/'scripts/packages/lock.json').read_text())['files']:
+   with tarfile.open(ROOT/'public/packages'/entry['path'],ignore_zeros=True) as package:
+    fields=dict(line.split(' = ',1) for line in package.extractfile('.PKGINFO').read().decode().splitlines() if ' = ' in line)
+    record={key:fields[field] for key,field in {'P':'pkgname','V':'pkgver','A':'arch','L':'license','o':'origin','c':'commit'}.items()}
+    if not any((p['P'],p['V'])==(record['P'],record['V']) for p in package_records): package_records.append(record)
   (OUT/'packages.json').write_text(json.dumps(package_records,indent=2)+'\n')
   for target, name in [(init / 'init','init'),(fs / 'sbin/pocket-init','pocket-init'),(fs / 'sbin/pocket-bridge','pocket-bridge')]:
    shutil.copyfile(ROOT / 'scripts/build-alpine' / name, target); target.chmod(0o755)
@@ -63,7 +97,7 @@ def main():
     try: os.utime(p,(0,0),follow_symlinks=False)
     except OSError: pass
   disk=tmp/'root.img'
-  subprocess.run(['truncate','-s','64M',str(disk)],check=True)
+  subprocess.run(['truncate','-s','512M',str(disk)],check=True)
   env={**os.environ,'E2FSPROGS_FAKE_TIME':'1'}
   subprocess.run(['mke2fs','-q','-t','ext4','-b','4096','-U','7bf02af6-4abb-4bb6-9ed7-d47920120800','-E','root_owner=0:0,lazy_itable_init=0,lazy_journal_init=0,hash_seed=7bf02af6-4abb-4bb6-9ed7-d47920120800','-d',str(fs),str(disk)],check=True,env=env)
   # mke2fs -d preserves uid/gid from source; explicitly normalize every inode.
@@ -90,9 +124,9 @@ def main():
  for ext in ['mjs','wasm']:
   name='ort-wasm-simd-threaded.'+ext
   shutil.copyfile(ROOT/'node_modules/onnxruntime-web/dist'/name,ai/name)
- manifest={'format':1,'image':'alpine-3.23.7-x86-pocket-1','runtime':'0.5.472','diskBytes':67108864,'inputs':INPUTS,'assets':{}}
+ manifest={'format':1,'image':'alpine-3.23.7-x86-pocket-1','runtime':'0.5.472','diskBytes':536870912,'inputs':INPUTS,'assets':{}}
  for p in sorted(OUT.iterdir()):
   if p.name!='assets.json' and not p.name.startswith('.'): manifest['assets'][p.name]={'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
  (OUT/'assets.json').write_text(json.dumps(manifest,indent=2)+'\n')
- print('Built Alpine 3.23.7 x86 image, kernel 6.18.60, 64 MiB ext4 disk.')
+ print('Built Alpine 3.23.7 x86 image, kernel 6.18.60, 512 MiB ext4 disk.')
 if __name__=='__main__': main()

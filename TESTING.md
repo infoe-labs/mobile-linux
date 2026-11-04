@@ -60,3 +60,16 @@ version and observations without personal identifiers.
 
 Do not mark iOS/Android acceptance complete based on Playwright WebKit or viewport
 emulation. Manual install and keyboard behavior require the operating system.
+
+Package integration tests exercise a failed index download, offline bundle caching,
+real signed curl/git installation, and persistence after an offline reload. For
+the larger Go toolchain and actual Hello World compilation, explicitly run:
+
+```sh
+RUN_PACKAGES=1 npm run test:e2e -- --grep 'Go installs' --project chromium
+```
+
+This test uses 512 MB guest RAM and can take several minutes. No network security
+bypass, relay, proxy, or simulated apk success is used. It also checks Go and its
+compiler dependencies after restarting the PWA. Actual mobile-device testing is
+separate from desktop Chromium/WebKit automation.

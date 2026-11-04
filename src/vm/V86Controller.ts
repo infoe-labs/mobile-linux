@@ -1,4 +1,7 @@
 import { V86 } from 'v86';
+import { PackageNetwork } from '../lib/packages/PackageNetwork';
+import { SSHTransport } from '../lib/ssh/SSHTransport';
+import { encodeSnapshot, decodeSnapshot } from '../storage/SnapshotStorage';
 import { PersistentDisk } from '../storage/PersistentDisk';
 import { GuestBridge } from './GuestBridge';
 import { canTransition, type VMState } from './state';
@@ -12,8 +15,13 @@ export const snapshots = createIndexedStore({
   namespace: 'snapshots',
   version: 1,
 });
+export async function loadSnapshot(id: string): Promise<Snapshot> {
+  return decodeSnapshot(await snapshots.get(id));
+}
 export type Snapshot = {
   format: 1;
+  serialPorts?: 3;
+  packageNetwork?: 1;
   runtime: string;
   image: string;
   memory: number;
@@ -23,6 +31,10 @@ export type Snapshot = {
   disk: ArrayBuffer;
 };
 export class V86Controller extends EventTarget {
+  readonly packages = new PackageNetwork();
+  readonly ssh = new SSHTransport((line) =>
+    this.emulator?.serial_send_bytes(2, new TextEncoder().encode(line)),
+  );
   state: VMState = 'uninitialized';
   message = 'Your private Linux workspace.';
   progress = 0;
@@ -50,6 +62,7 @@ export class V86Controller extends EventTarget {
   }
   private fail(message: string) {
     clearTimeout(this.bootTimer);
+    this.ssh.disconnect();
     this.emulator?.stop();
     this.status('failed', message);
   }
@@ -81,7 +94,7 @@ export class V86Controller extends EventTarget {
       });
       this.memory = memory;
       this.status('downloading', 'Checking local boot assets…');
-      const manifest = await fetch(base + 'assets.json').then((r) => {
+      const manifest = await fetch(base + 'assets.json', { cache: 'no-store' }).then((r) => {
         if (!r.ok) throw new Error('Build VM assets first (npm run assets).');
         return r.json();
       });
@@ -89,7 +102,7 @@ export class V86Controller extends EventTarget {
       const assets: Record<string, ArrayBuffer> = {};
       const names = Object.keys(manifest.assets);
       for (const [i, name] of names.entries()) {
-        const response = await fetch(base + name);
+        const response = await fetch(base + name, { cache: 'no-store' });
         if (!response.ok)
           throw new Error('Boot asset unavailable. Complete installation online first.');
         const data = await response.arrayBuffer();
@@ -136,7 +149,9 @@ export class V86Controller extends EventTarget {
         hda: this.disk as any,
         cmdline:
           'quiet loglevel=3 console=ttyS0,115200 earlyprintk=serial,ttyS0,115200 root=/dev/sda rw init=/init tsc=reliable random.trust_cpu=on mitigations=off',
+        net_device: { type: 'virtio', relay_url: 'fetch', dns_method: 'static' },
         uart1: true,
+        uart2: true,
         autostart: false,
         disable_keyboard: true,
         disable_mouse: true,
@@ -151,10 +166,12 @@ export class V86Controller extends EventTarget {
             for (const fn of this.output) fn(chunk);
           });
       });
+      this.emulator.add_listener('serial2-output-byte', (byte: number) => this.ssh.accept(byte));
       this.emulator.add_listener('serial1-output-byte', (byte: number) =>
         this.bridge?.accept(byte),
       );
       this.emulator.add_listener('emulator-loaded', () => {
+        (this.emulator as any).network_adapter.fetch = this.packages.fetch;
         this.status('booting', 'Booting the Linux kernel…');
         this.emulator!.run();
       });
@@ -177,6 +194,7 @@ export class V86Controller extends EventTarget {
   }
   async pause() {
     if (this.state !== 'running') return;
+    if (this.ssh.state !== 'idle') this.ssh.disconnect('SSH disconnected before pausing Alpine.');
     await this.bridge!.request('SYNC');
     await this.emulator!.stop();
     await this.disk!.flush();
@@ -202,6 +220,8 @@ export class V86Controller extends EventTarget {
       await this.disk!.flush();
       const snap: Snapshot = {
         format: 1,
+        serialPorts: 3,
+        packageNetwork: 1,
         runtime: RUNTIME,
         image: this.image,
         memory: this.memory,
@@ -212,7 +232,7 @@ export class V86Controller extends EventTarget {
       };
       const index = ((await snapshots.get('index')) as string[] | undefined) ?? [];
       const id = crypto.randomUUID();
-      await snapshots.set(id, snap, { ttlMs: null });
+      await snapshots.set(id, encodeSnapshot(snap), { ttlMs: null });
       await snapshots.set(
         id + ':meta',
         { name: snap.name, date: snap.date, bytes: state.byteLength + snap.disk.byteLength },
@@ -227,6 +247,10 @@ export class V86Controller extends EventTarget {
     }
   }
   async restore(snap: Snapshot) {
+    if (snap.serialPorts !== 3 || snap.packageNetwork !== 1)
+      throw new Error(
+        'Snapshot uses older virtual hardware. Cold boot from disk instead; saved snapshots are preserved.',
+      );
     if (this.state === 'running') await this.pause();
     if (this.state !== 'paused') throw new Error('Start and pause VM before restoring.');
     if (

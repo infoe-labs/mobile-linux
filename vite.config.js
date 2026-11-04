@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import { readFileSync } from 'node:fs';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -6,8 +7,15 @@ import { fileURLToPath } from 'node:url';
 import { appConfig, normalizeBase } from './app.config.js';
 
 const base = normalizeBase(process.env.BASE_PATH || '/');
+const devCert = process.env.DEV_HTTPS_CERT;
+const devKey = process.env.DEV_HTTPS_KEY;
+if (Boolean(devCert) !== Boolean(devKey))
+  throw new Error('Set both local HTTPS certificate and key files.');
+const https =
+  devCert && devKey ? { cert: readFileSync(devCert), key: readFileSync(devKey) } : undefined;
 export default defineConfig({
   base,
+  server: { https },
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   plugins: [
     react(),

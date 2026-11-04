@@ -8,6 +8,11 @@ try {
   for (const ext of ['mjs', 'wasm'])
     if (!existsSync(`public/ai/${appConfig.inferenceRuntime}/ort-wasm-simd-threaded.${ext}`))
       throw new Error();
+  const packages = JSON.parse(readFileSync('public/packages/catalog.json', 'utf8'));
+  for (const file of packages.files) {
+    const path = 'public/packages/' + file.path + (file.path.endsWith('.gz') ? '.bin' : '');
+    if (!existsSync(path) || statSync(path).size !== file.bytes) throw new Error();
+  }
   const sources = JSON.parse(readFileSync('public/sources/manifest.json', 'utf8'));
   for (const [name, meta] of Object.entries(sources.files))
     if (

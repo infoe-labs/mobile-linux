@@ -100,7 +100,43 @@ test('dedicated bridge matches IDs and supports cancellation without parsing ter
 });
 test('snapshot imports reject invalid headers and oversize data before touching a VM', async () => {
   await assert.rejects(() => importSnapshot(new File(['bad header'], 'bad.snapshot')), /signature/);
-  await assert.rejects(() => importSnapshot({ size: 513 * 1024 * 1024 }), /limit/);
+  await assert.rejects(() => importSnapshot({ size: 1537 * 1024 * 1024 }), /limit/);
   const blob = new Blob(['APSNAP01', new Uint32Array([99999])]);
   await assert.rejects(() => importSnapshot(new File([blob], 'bad.snapshot')), /header/);
+});
+test('64 MiB persistent disks expand without changing original offsets or saved blocks', async () => {
+  const { IDBFactory } = await import('fake-indexeddb');
+  globalThis.indexedDB = new IDBFactory();
+  const seed = new ArrayBuffer(67108864);
+  new Uint8Array(seed)[100] = 41;
+  const disk = await PersistentDisk.open(seed, 'growth-fixture', () =>
+    assert.fail('write failure'),
+  );
+  await new Promise((resolve) => disk.set(8192, new Uint8Array([99]), resolve));
+  await disk.flush();
+  const grown = await PersistentDisk.open(new ArrayBuffer(536870912), 'growth-fixture', () =>
+    assert.fail('write failure'),
+  );
+  assert.equal(grown.byteLength, 536870912);
+  assert.equal(new Uint8Array(grown.buffer)[100], 41);
+  assert.equal(new Uint8Array(grown.buffer)[8192], 99);
+  assert.equal(new Uint8Array(grown.buffer)[67108864], 0);
+});
+
+test('snapshot blob encoding preserves binary data and reads previous records', async () => {
+  const { encodeSnapshot, decodeSnapshot } = await import('../src/storage/SnapshotStorage.ts');
+  const original = {
+    format: 1,
+    state: new Uint8Array([1, 2]).buffer,
+    disk: new Uint8Array([3, 4]).buffer,
+  };
+  const encoded = encodeSnapshot(original);
+  assert(encoded.state instanceof Blob);
+  assert(encoded.disk instanceof Blob);
+  assert.deepEqual(await decodeSnapshot(encoded), original);
+  assert.equal(await decodeSnapshot(original), original);
+  await assert.rejects(
+    () => decodeSnapshot({ ...encoded, binaryStorage: 'unknown' }),
+    /Unsupported/,
+  );
 });

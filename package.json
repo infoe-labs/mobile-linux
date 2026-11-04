@@ -10,12 +10,12 @@
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "node --experimental-strip-types --test tests/*.test.js",
+    "test": "node --experimental-strip-types --test tests/*.test.js scripts/ssh-bridge/*.test.mjs",
     "test:e2e": "playwright test",
     "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run test:e2e",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src tests/*.test.js",
-    "assets": "python3 scripts/build-alpine/build.py",
+    "assets": "python3 scripts/packages/bundle.py && python3 scripts/build-alpine/build.py",
     "sbom": "node scripts/sbom.mjs",
     "format": "prettier --write src scripts/*.mjs tests *.js *.json .github/workflows/*.yml",
     "prebuild": "node scripts/check-assets.mjs"
@@ -45,12 +45,14 @@
     "fake-indexeddb": "^6.2.4",
     "globals": "17.13.0",
     "prettier": "3.9.10",
+    "ssh2": "1.17.0",
     "tailwindcss": "^4.3.3",
     "typescript": "6.0.3",
     "typescript-eslint": "8.72.1",
     "vite": "^8.3.5",
     "vite-plugin-pwa": "^2.0.0",
     "workbox-core": "^7.4.0",
-    "workbox-precaching": "^7.4.0"
+    "workbox-precaching": "^7.4.0",
+    "ws": "8.22.1"
   }
 }

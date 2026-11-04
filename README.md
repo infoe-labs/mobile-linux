@@ -4,7 +4,8 @@
 
 A real Alpine Linux computer in a mobile-first, browser-local PWA. MIT-licensed
 application code, built on the requested React/Vite PWA base layer. No account,
-remote VM, tunnel, analytics or inference service.
+remote VM, analytics or inference service. Optional SSH uses a bridge you run on
+your target machine; see [SSH setup](docs/SSH.md).
 
 This implementation boots Alpine 3.23.7 x86 with kernel 6.18.60-0-virt in v86,
 connects xterm to a real ash shell, and persists its ext4 root disk in IndexedDB.
@@ -24,8 +25,10 @@ npm run dev
 ```
 
 Press **Boot Alpine**. Try `uname -a`, `cat /etc/os-release`, `top`, or
-`vi /root/notes`. The default is 128 MB guest RAM, with a 64 MiB writable root.
-Linux has no internet connection; `apk add` cannot reach online repositories.
+`vi /root/notes`. The default is 128 MB guest RAM, with a 512 MiB writable root.
+The bundled static repositories support `apk update` and `apk add go curl git`.
+Choose 512 MB guest RAM for Go compilation. General guest internet access is not
+provided; see [package networking and limitations](docs/PACKAGES.md).
 
 ```sh
 npm run typecheck
@@ -48,6 +51,8 @@ RUN_AI=1 npm run test:e2e -- --grep 'optional model'
 
 ## Use
 
+- SSH: `ssh user@host` requests approval for a secure WebSocket bridge on your target
+  machine. SSH encryption and host-key checking run inside Alpine. [Setup](docs/SSH.md).
 - Real shell: Ctrl/Cmd shortcuts, scrollback, search, selection, copy/paste,
   adjustable fonts/themes, and sticky Ctrl/Alt/Shift with accessory keys.
 - Tab invokes ash's genuine completion. Compose offers explicit, non-executing
@@ -90,7 +95,7 @@ not evidence of installed iOS/Android behavior. See [compatibility](COMPATIBILIT
 See [milestones](docs/MILESTONES.md), [testing](TESTING.md),
 [architecture](ARCHITECTURE.md), [security/privacy](SECURITY.md),
 [third-party notices](THIRD_PARTY_NOTICES.md), and [SBOM](sbom.cdx.json).
-There is one real serial shell, no independent PTY tabs. There is no guest network,
+There is one real serial shell, no independent PTY tabs. There is no unrestricted guest network,
 background execution guarantee, automatic snapshot, or validated mobile AI tier.
 
 Public contributions must use an explicitly approved pseudonymous Git identity,

@@ -6,7 +6,7 @@ Research date: 2026-10-30. Original implementation on the requested PWA base
 layer. See `docs/MILESTONES.md` for measured verification and outstanding work.
 
 A genuine Alpine 3.23.7 x86 userland runs on Alpine's 6.18.60-0-virt Linux
-kernel in v86 0.5.472. Direct kernel/initramfs boot mounts a 64 MiB ext4 IDE disk.
+kernel in v86 0.5.472. Direct kernel/initramfs boot mounts a 512 MiB ext4 IDE disk.
 No shell command is interpreted by the application. Browser xterm input goes to
 COM1; a guest ash process executes it. `uname` and `os-release` were verified
 in Node v86, Chromium and WebKit. Firmware and WASM are served from this app's base.
@@ -55,8 +55,8 @@ restoring, stopped and failed have validated transitions. COM2 emits a fixed
 protocol readiness frame only after root is mounted and the helper starts.
 Emulator-loaded alone is not readiness. Boot failure has a 180-second limit.
 
-128 MiB guest RAM by default, selectable 96–256 MiB before boot. Browser process
-memory is substantially higher: WASM, 64 MiB in-memory disk, boot buffers,
+128 MiB guest RAM by default, selectable 96–512 MiB before boot. Browser process
+memory is substantially higher: WASM, 512 MiB in-memory disk, boot buffers,
 rendering and snapshots add overhead. No invented host CPU/memory statistics.
 Emulator allocation errors surface as failures. No SharedArrayBuffer, COOP/COEP,
 worker CPU-emulator fork, or arbitrary Pages response headers are required.
@@ -152,8 +152,11 @@ Updates require the VM to be paused and AI unloaded. Disk namespaces never chang
 with an app update. Snapshot incompatibility is refused. A changed image ID needs
 an explicit migration/backup workflow; there is no silent disk reset.
 
-Guest networking is absent. Ordinary browser JavaScript cannot provide native raw
-TCP/UDP. There is no tunnel, remote VM, WISP relay, analytics or login. Import
+Guest networking is restricted to bundled package repositories through the v86
+VirtIO/fetch adapter; see [package networking](docs/PACKAGES.md). Ordinary browser JavaScript cannot provide native raw
+TCP/UDP. There is no general network tunnel, remote VM, WISP relay, analytics or app login.
+An optional SSH-only COM3 transport connects the bundled guest dbclient to a
+user-approved WSS bridge. See [SSH architecture and setup](docs/SSH.md). Import
 architecture-compatible APKs through Files and use `apk add --no-network` inside
 Alpine with all dependencies provided. Signatures remain checked by apk; do not
 recommend `--allow-untrusted`. Model/initial app downloads make normal HTTPS asset

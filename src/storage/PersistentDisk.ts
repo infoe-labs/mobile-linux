@@ -53,6 +53,12 @@ export class PersistentDisk {
       disk.buffer = await new Response(
         new Blob([stored]).stream().pipeThrough(new DecompressionStream('gzip')),
       ).arrayBuffer();
+      if (disk.buffer.byteLength === 67108864 && disk.byteLength === 536870912) {
+        const expanded = new Uint8Array(seed);
+        expanded.fill(0);
+        expanded.set(new Uint8Array(disk.buffer));
+        disk.buffer = expanded.buffer;
+      }
       if (disk.buffer.byteLength !== disk.byteLength)
         throw new Error('Stored disk seed has an invalid size.');
     } else if (compressedSeed) compressed = compressedSeed.slice(0);
@@ -168,11 +174,32 @@ export class PersistentDisk {
   async replace(bytes: ArrayBuffer) {
     await this.flush();
     if (bytes.byteLength !== this.byteLength) throw new Error('Disk size mismatch.');
+    const compressed = await new Promise<ArrayBuffer>((resolve, reject) => {
+      const request = this.db.transaction('meta', 'readonly').objectStore('meta').get('seed');
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(new Error('Original disk seed unavailable.'));
+    });
+    const baseline = new Uint8Array(
+      await new Response(
+        new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip')),
+      ).arrayBuffer(),
+    );
+    const replacement = new Uint8Array(bytes);
     const tx = this.db.transaction('blocks', 'readwrite', { durability: 'strict' }),
       store = tx.objectStore('blocks');
     store.clear();
-    for (let offset = 0; offset < bytes.byteLength; offset += 4096)
-      store.put(new Uint8Array(bytes.slice(offset, offset + 4096)), offset);
+    // Store only differences from the retained seed, including explicit zeroing.
+    // Expanded space beyond an old 64 MiB seed has an implicit zero baseline.
+    for (let offset = 0; offset < bytes.byteLength; offset += 4096) {
+      let same = true;
+      for (let i = offset; i < offset + 4096; i++) {
+        if (replacement[i] !== (baseline[i] ?? 0)) {
+          same = false;
+          break;
+        }
+      }
+      if (!same) store.put(replacement.slice(offset, offset + 4096), offset);
+    }
     await new Promise<void>((resolve, reject) => {
       tx.oncomplete = () => resolve();
       tx.onabort = () => reject(new Error('Disk restore failed.'));

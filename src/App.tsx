@@ -1,3 +1,5 @@
+import PackagePanel from './components/PackagePanel';
+import SSHConnection from './components/ssh/SSHConnection';
 import Files from './screens/Files';
 import Snapshots from './screens/Snapshots';
 import Diagnostics from './screens/Diagnostics';
@@ -114,6 +116,8 @@ export default function App() {
   }, [fileDirty]);
   return (
     <main className="app">
+      <SSHConnection />
+      <PackagePanel />
       <header className="topbar">
         <a
           className="brand"
@@ -204,7 +208,7 @@ export default function App() {
             <small>
               About 19 MB of boot assets · {memory} MB guest RAM
               <br />
-              No guest internet connection. No account.
+              Static package repositories available. No general guest internet.
             </small>
           </div>
         )}
@@ -346,7 +350,7 @@ export default function App() {
                       }
                     }}
                   >
-                    {[96, 128, 192, 256].map((n) => (
+                    {[96, 128, 192, 256, 512].map((n) => (
                       <option key={n} value={n}>
                         {n} MB
                       </option>
@@ -415,9 +419,10 @@ export default function App() {
                 )}
                 <h3>Privacy & licenses</h3>
                 <p>
-                  Commands and files stay in this browser. AI is optional; downloading a model
-                  contacts Hugging Face. No guest network, analytics, remote shell, or inference
-                  service.
+                  Local commands and files stay in this browser. SSH sends session data to your
+                  chosen server. AI is optional; downloading a model contacts Hugging Face. Optional
+                  SSH uses your own approved bridge. No general guest network, analytics, or
+                  inference service.
                 </p>
                 <p>
                   Disk and snapshots remain until deleted or browser eviction. Storage is

@@ -45,8 +45,9 @@ def main():
    for entry in t:
     if not entry.isfile(): continue
     parts=pathlib.PurePosixPath(entry.name).parts
-    if 'main' not in parts: continue
-    i=parts.index('main')
+    section=next((name for name in ['main','community'] if name in parts),None)
+    if section is None: continue
+    i=parts.index(section)
     if len(parts)<=i+2 or parts[i+1]!=origin: continue
     rel=pathlib.PurePosixPath(*parts[i+2:])
     if '..' in rel.parts: raise RuntimeError('Unsafe packaging archive')

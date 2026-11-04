@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { vm, snapshots, type Snapshot } from '../vm/V86Controller';
+import { vm, snapshots, loadSnapshot } from '../vm/V86Controller';
 import { download, exportSnapshot, importSnapshot } from '../storage/BackupManager';
 import type { Act } from '../app/actions';
 export default function Snapshots({ act }: { act: Act }) {
@@ -79,9 +79,14 @@ export default function Snapshots({ act }: { act: Act }) {
               const file = e.target.files?.[0];
               if (file)
                 void act(async () => {
-                  if (file.size !== 67108864)
-                    throw new Error('Disk must be a 64 MiB Alpine Pocket image.');
-                  const bytes = await file.arrayBuffer();
+                  if (![67108864, 536870912].includes(file.size))
+                    throw new Error('Disk must be a 64 or 512 MiB Alpine Pocket image.');
+                  let bytes = await file.arrayBuffer();
+                  if (bytes.byteLength < vm.disk!.byteLength) {
+                    const expanded = new Uint8Array(vm.disk!.byteLength);
+                    expanded.set(new Uint8Array(bytes));
+                    bytes = expanded.buffer;
+                  }
                   if (new DataView(bytes).getUint16(1080, true) !== 0xef53)
                     throw new Error('Invalid ext4 disk signature.');
                   if (
@@ -109,14 +114,12 @@ export default function Snapshots({ act }: { act: Act }) {
             <button
               onClick={() => {
                 if (confirm('Replace current disk and machine state?'))
-                  void act(async () => vm.restore((await snapshots.get(id)) as Snapshot));
+                  void act(async () => vm.restore(await loadSnapshot(id)));
               }}
             >
               Restore
             </button>
-            <button
-              onClick={() => act(async () => exportSnapshot((await snapshots.get(id)) as Snapshot))}
-            >
+            <button onClick={() => act(async () => exportSnapshot(await loadSnapshot(id)))}>
               Export
             </button>
             <button

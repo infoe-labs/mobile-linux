@@ -1,0 +1,57 @@
+#!/bin/ash
+# APSSH1: bounded base64 frames on COM3, one acknowledged frame per direction.
+# SSH plaintext and credentials never travel on this transport.
+lock=/run/pocket-ssh
+echo "$$" > "$lock/proxy"
+sid=$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')
+frame() {
+  while ! mkdir "$lock/send" 2>/dev/null; do sleep .01; done
+  printf 'APSSH1\t%s\t%s\t%s\n' "$sid" "$1" "$2" >&3
+  rmdir "$lock/send"
+}
+reader=
+writer=
+cleanup() {
+  trap - EXIT HUP INT TERM
+  [ -z "$reader" ] || kill "$reader" 2>/dev/null
+  [ -z "$writer" ] || kill "$writer" 2>/dev/null
+  printf 'APSSH1\t%s\tC\t\n' "$sid" >&3
+}
+exec 3<>/dev/ttyS2
+trap cleanup EXIT
+trap 'exit 1' HUP INT TERM
+stty -F /dev/ttyS2 115200 raw -echo -ixon -ixoff
+mkfifo "$lock/ack"
+# Opening read/write prevents FIFO-open deadlocks.
+exec 4<>"$lock/ack"
+printf 'APSSH1\t%s\tO\t%s:%s\n' "$sid" "$1" "$2" >&3
+IFS="$(printf '\t')" read -r -t 120 magic token op data <&3 || exit 1
+[ "$magic:$token:$op" = "APSSH1:$sid:Y" ] || exit 1
+# Preserve proxy stdin: ash redirects asynchronous jobs' stdin to /dev/null.
+exec 5<&0
+(
+  while :; do
+    data=$(dd bs=768 count=1 2>/dev/null <&5 | base64 | tr -d '\n')
+    [ -n "$data" ] || break
+    frame D "$data"
+    read -r -t 60 ack <&4 || break
+  done
+  printf 'APSSH1\t%s\tC\t\n' "$sid" >&3
+) &
+writer=$!
+echo "$writer" > "$lock/writer"
+(
+  while IFS="$(printf '\t')" read -r magic token op data <&3; do
+    [ "$magic:$token" = "APSSH1:$sid" ] || continue
+    case "$op" in
+      D) printf '%s' "$data" | base64 -d || break
+         frame A '';;
+      A) printf 'ack\n' >&4;;
+      C) break;;
+      *) break;;
+    esac
+  done
+) &
+reader=$!
+echo "$reader" > "$lock/reader"
+wait "$reader"
