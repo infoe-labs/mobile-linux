@@ -123,20 +123,35 @@ test('64 MiB persistent disks expand without changing original offsets or saved 
   assert.equal(new Uint8Array(grown.buffer)[67108864], 0);
 });
 
-test('snapshot blob encoding preserves binary data and reads previous records', async () => {
-  const { encodeSnapshot, decodeSnapshot } = await import('../src/storage/SnapshotStorage.ts');
+test('snapshot chunks round-trip, delete together, and read previous records', async () => {
+  const { saveStoredSnapshot, loadStoredSnapshot, removeStoredSnapshot } =
+    await import('../src/storage/SnapshotStorage.ts');
+  const { createIndexedStore } = await import('../src/lib/storage.js');
+  const { IDBFactory } = await import('fake-indexeddb');
+  const store = createIndexedStore(
+    { appId: 'synthetic', basePath: '/', namespace: 'snapshots', version: 1 },
+    new IDBFactory(),
+  );
   const original = {
     format: 1,
     state: new Uint8Array([1, 2]).buffer,
-    disk: new Uint8Array([3, 4]).buffer,
+    disk: new ArrayBuffer(9 * 1024 * 1024),
   };
-  const encoded = encodeSnapshot(original);
-  assert(encoded.state instanceof Blob);
-  assert(encoded.disk instanceof Blob);
-  assert.deepEqual(await decodeSnapshot(encoded), original);
-  assert.equal(await decodeSnapshot(original), original);
+  new Uint8Array(original.disk)[8 * 1024 * 1024] = 42;
+  await saveStoredSnapshot(store, 'sample', original);
+  assert.deepEqual(await loadStoredSnapshot(store, 'sample'), original);
+  await removeStoredSnapshot(store, 'sample');
+  assert.equal(await store.get('sample:disk:1'), undefined);
+  await assert.rejects(() => loadStoredSnapshot(store, 'sample'), /unavailable/);
+  await store.set('previous', original, { ttlMs: null });
+  assert.deepEqual(await loadStoredSnapshot(store, 'previous'), original);
+  function* failedWrite() {
+    yield ['partial', 1];
+    throw new Error('synthetic interruption');
+  }
   await assert.rejects(
-    () => decodeSnapshot({ ...encoded, binaryStorage: 'unknown' }),
-    /Unsupported/,
+    () => store.setMany(failedWrite(), { ttlMs: null }),
+    /synthetic interruption/,
   );
+  assert.equal(await store.get('partial'), undefined);
 });

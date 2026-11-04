@@ -1,7 +1,11 @@
 import { V86 } from 'v86';
 import { PackageNetwork } from '../lib/packages/PackageNetwork';
 import { SSHTransport } from '../lib/ssh/SSHTransport';
-import { encodeSnapshot, decodeSnapshot } from '../storage/SnapshotStorage';
+import {
+  saveStoredSnapshot,
+  loadStoredSnapshot,
+  removeStoredSnapshot,
+} from '../storage/SnapshotStorage';
 import { PersistentDisk } from '../storage/PersistentDisk';
 import { GuestBridge } from './GuestBridge';
 import { canTransition, type VMState } from './state';
@@ -16,7 +20,10 @@ export const snapshots = createIndexedStore({
   version: 1,
 });
 export async function loadSnapshot(id: string): Promise<Snapshot> {
-  return decodeSnapshot(await snapshots.get(id));
+  return loadStoredSnapshot(snapshots, id);
+}
+export async function removeSnapshot(id: string) {
+  return removeStoredSnapshot(snapshots, id);
 }
 export type Snapshot = {
   format: 1;
@@ -232,7 +239,7 @@ export class V86Controller extends EventTarget {
       };
       const index = ((await snapshots.get('index')) as string[] | undefined) ?? [];
       const id = crypto.randomUUID();
-      await snapshots.set(id, encodeSnapshot(snap), { ttlMs: null });
+      await saveStoredSnapshot(snapshots, id, snap);
       await snapshots.set(
         id + ':meta',
         { name: snap.name, date: snap.date, bytes: state.byteLength + snap.disk.byteLength },

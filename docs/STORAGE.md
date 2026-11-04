@@ -94,8 +94,10 @@ open, and on access. Installed APKs and Go build caches follow guest-disk retent
 The disk expands from 64 to 512 MiB without changing block offsets or deleting
 the original stored seed. See [migration and deletion details](PACKAGES.md).
 
-Snapshot binary payloads now use a `binaryStorage: blobs-v1` record marker and
-IndexedDB Blobs to avoid Chromium's serialized-value limit with 512 MiB disks.
+Snapshot binary payloads use a `binaryStorage: chunks-v1` record marker and
+8 MiB IndexedDB records to avoid Chromium's serialized-value limit and WebKit
+Blob-storage failures. A single transaction saves the descriptor and every chunk;
+interrupted writes roll back together. Deletion removes all payload chunks.
 The reader accepts earlier ArrayBuffer records without rewriting or deleting them;
 existing virtual-hardware compatibility checks still apply. Snapshot namespace,
 retention, explicit deletion, and exported backup format remain unchanged.

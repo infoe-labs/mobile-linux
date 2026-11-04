@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { vm, snapshots, loadSnapshot } from '../vm/V86Controller';
+import { vm, snapshots, loadSnapshot, removeSnapshot } from '../vm/V86Controller';
 import { download, exportSnapshot, importSnapshot } from '../storage/BackupManager';
 import type { Act } from '../app/actions';
 export default function Snapshots({ act }: { act: Act }) {
@@ -127,7 +127,7 @@ export default function Snapshots({ act }: { act: Act }) {
               onClick={() => {
                 if (confirm('Permanently delete this snapshot?'))
                   void act(async () => {
-                    await snapshots.remove(id);
+                    await removeSnapshot(id);
                     await snapshots.remove(id + ':meta');
                     await snapshots.set(
                       'index',
