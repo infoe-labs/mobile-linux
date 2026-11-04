@@ -11737,7 +11737,7 @@
     {
       "type": "operating-system",
       "name": "libexpat",
-      "version": "2.9.0-r0",
+      "version": "2.10.0-r0",
       "licenses": [
         {
           "license": {
@@ -11745,11 +11745,11 @@
           }
         }
       ],
-      "purl": "pkg:apk/alpine/libexpat@2.9.0-r0?arch=x86",
+      "purl": "pkg:apk/alpine/libexpat@2.10.0-r0?arch=x86",
       "properties": [
         {
           "name": "aports.commit",
-          "value": "b858a34d231f324a158c04209496aaa0af3313f8"
+          "value": "291311a14701f97a0f8483d0c2fe6c71efa4c590"
         }
       ]
     },

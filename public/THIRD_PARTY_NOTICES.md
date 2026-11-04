@@ -76,7 +76,7 @@ replace inspection of the bundled binary and image components.
 - jansson 2.14.1-r0: MIT; origin jansson, aports 9161ac3604718ebb3c85b5795f0a084d45362571
 - libatomic 15.2.0-r2: GPL-2.0-or-later AND LGPL-2.1-or-later; origin gcc, aports 7fa6e7fd3465c5ff89cc33a56d20bf4d59105aaf
 - libcurl 8.23.0-r0: curl; origin curl, aports 856d76205ed1b7f875d32fd7b72eb93912f32acd
-- libexpat 2.9.0-r0: MIT; origin expat, aports b858a34d231f324a158c04209496aaa0af3313f8
+- libexpat 2.10.0-r0: MIT; origin expat, aports 291311a14701f97a0f8483d0c2fe6c71efa4c590
 - libgcc 15.2.0-r2: GPL-2.0-or-later AND LGPL-2.1-or-later; origin gcc, aports 7fa6e7fd3465c5ff89cc33a56d20bf4d59105aaf
 - libgomp 15.2.0-r2: GPL-2.0-or-later AND LGPL-2.1-or-later; origin gcc, aports 7fa6e7fd3465c5ff89cc33a56d20bf4d59105aaf
 - libidn2 2.3.8-r0: GPL-2.0-or-later OR LGPL-3.0-or-later; origin libidn2, aports 8240e09aa2fdd8f9979b2016be082273965aff0c
