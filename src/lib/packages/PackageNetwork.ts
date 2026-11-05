@@ -2,6 +2,7 @@ import { packageResource } from './cache';
 /** A static repository transport, not an internet gateway. apk verifies Alpine signatures. */
 export class PackageNetwork extends EventTarget {
   message = 'Bundled repositories: Go, curl, git and busybox-extras (plus dependencies).';
+  missing = new Map<string, string>();
   received = 0;
   total = 0;
   private catalog?: Promise<Map<string, { bytes: number; sha256: string }>>;
@@ -42,6 +43,11 @@ export class PackageNetwork extends EventTarget {
         record.bytes < 1 ||
         record.bytes > 128 * 1024 * 1024
       ) {
+        if (path.endsWith('.apk'))
+          this.missing.set(
+            path.split('/').at(-1)!,
+            'https://dl-cdn.alpinelinux.org/alpine/v3.23/' + path,
+          );
         this.update(
           'This package is not included in the static bundle. Supported packages: go, curl, git, busybox-extras.',
         );

@@ -11,7 +11,16 @@ export function unbase64(text: string): Uint8Array {
 export const decode = (text: string) =>
   new TextDecoder('utf-8', { fatal: true }).decode(unbase64(text));
 export type Operation =
-  'COMMANDS' | 'LIST' | 'READ' | 'WRITE' | 'MKDIR' | 'DELETE' | 'RENAME' | 'RESIZE' | 'SYNC';
+  | 'COMMANDS'
+  | 'LIST'
+  | 'READ'
+  | 'APPEND'
+  | 'WRITE'
+  | 'MKDIR'
+  | 'DELETE'
+  | 'RENAME'
+  | 'RESIZE'
+  | 'SYNC';
 export type Entry = { name: string; size: number; mode: string; type: string };
 export function parseEntries(payload: string): Entry[] {
   const text = decode(payload);
@@ -36,9 +45,18 @@ export function parseEntries(payload: string): Entry[] {
 }
 export function requestLine(id: number, op: Operation, path: string, data = '') {
   if (
-    !['COMMANDS', 'LIST', 'READ', 'WRITE', 'MKDIR', 'DELETE', 'RENAME', 'RESIZE', 'SYNC'].includes(
-      op,
-    ) ||
+    ![
+      'COMMANDS',
+      'LIST',
+      'READ',
+      'APPEND',
+      'WRITE',
+      'MKDIR',
+      'DELETE',
+      'RENAME',
+      'RESIZE',
+      'SYNC',
+    ].includes(op) ||
     !Number.isSafeInteger(id) ||
     id < 1 ||
     !path.startsWith('/') ||

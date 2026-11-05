@@ -156,3 +156,24 @@ package named `telnet`. If an earlier failed install keeps retrying a package yo
 no longer want, remove its request with `apk del busybox-extras`, then retry.
 Telnet still requires network transport that the restricted package adapter does
 not provide; installing the command does not grant arbitrary TCP connectivity.
+
+## Download and import other APKs
+
+When apk requests an archive outside the bundle, the Packages panel opens and
+shows a Download link to that archive on Alpine's public CDN. The browser opens
+the download separately; the app cannot read it until you choose it using
+**Import downloaded APK files**. Select dependency APKs together, then press
+**Install imported APKs in terminal**. This runs real `apk add --no-network` with
+signature verification enabled. Missing dependencies still require downloading
+and importing their APKs; this does not provide arbitrary guest internet access.
+Run `apk update` first to reduce stale archive links. Upstream may remove old
+versions; a missing upstream archive requires a newer index/app snapshot.
+
+Imports are streamed in 64 KiB chunks, with a 128 MiB per-file and 256 MiB per
+selection limit. Partial transfers are removed on handled failures. Completed
+archives remain in `/root/.pocket-apks`, including in guest disk backups, until
+you remove them with `rm -f /root/.pocket-apks/*`. A tab killed during transfer
+may leave a `.part` file there. Browser Downloads retention is controlled by your
+device; remove the original downloads separately. The host browser never executes
+APK contents. Cold boot the updated app before importing; old RAM snapshots may
+contain a guest helper that lacks chunked transfer support.
