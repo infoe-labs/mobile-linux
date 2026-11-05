@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
+import { importAPKs } from '../lib/packages/import';
+import { terminal } from '../terminal/TerminalController';
 import { vm } from '../vm/V86Controller';
 import { cachePackages, deletePackageCache, prunePackageCache } from '../lib/packages/cache';
 export default function PackagePanel() {
   const [, refresh] = useState(0);
+  const [imported, setImported] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   useEffect(() => {
@@ -24,11 +27,66 @@ export default function PackagePanel() {
     };
   }, []);
   return (
-    <details className="p-2 text-sm">
+    <details className="p-2 text-sm" open={vm.packages.missing.size > 0 || undefined}>
       <summary>Packages: Go, curl, git</summary>
+      {vm.packages.missing.size > 0 && (
+        <section aria-label="Missing package downloads">
+          <p>
+            These packages are outside the bundle. Download them, then select the downloaded files
+            below. Include their dependencies.
+          </p>
+          {[...vm.packages.missing].map(([name, url]) => (
+            <p key={name}>
+              <a href={url} target="_blank" rel="noopener noreferrer">
+                Download {name}
+              </a>
+            </p>
+          ))}
+        </section>
+      )}
+      <label>
+        Import downloaded APK files
+        <input
+          aria-label="Import downloaded APK files"
+          type="file"
+          accept=".apk"
+          multiple
+          disabled={busy || vm.state !== 'running'}
+          onChange={async (event) => {
+            const files = Array.from(event.target.files ?? []);
+            event.target.value = '';
+            if (!files.length) return;
+            setBusy(true);
+            try {
+              await importAPKs(vm.bridge!, files, setMessage);
+              setImported(true);
+              setMessage('APKs imported. Install them below; Alpine checks their signatures.');
+            } catch {
+              setMessage(
+                'Import failed. Check guest disk space and restart Alpine with the updated app if necessary.',
+              );
+            } finally {
+              setBusy(false);
+            }
+          }}
+        />
+      </label>
+      {imported && (
+        <button
+          disabled={busy || vm.state !== 'running'}
+          onClick={() => terminal.send('apk add --no-network /root/.pocket-apks/*.apk\r')}
+        >
+          Install imported APKs in terminal
+        </button>
+      )}
       <p>
-        Run apk update, then apk add go. Choose 512 MB RAM before booting for Go compilation. Only
-        the bundled repositories are available.
+        Browser downloads stay in your device Downloads folder. Imported archives stay in
+        /root/.pocket-apks; remove them after installation when no longer needed.
+      </p>
+      <p>
+        Run apk update, then apk add go. Choose 512 MB RAM before booting for Go compilation. Run
+        apk update after an app update. The bundle also includes busybox-extras for telnet. Only the
+        bundled repositories are available.
       </p>
       <button
         disabled={busy}

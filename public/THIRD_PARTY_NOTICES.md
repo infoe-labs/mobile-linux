@@ -66,6 +66,7 @@ replace inspection of the bundled binary and image components.
 - go 1.25.10-r0: BSD-3-Clause; origin go, aports 192902c2137aff74c9d8c579e0c53f00e997a5bc
 - binutils 2.45.1-r0: GPL-2.0-or-later AND LGPL-2.1-or-later AND BSD-3-Clause; origin binutils, aports accf42ac98479ed9df869377cb86c70da2011e72
 - brotli-libs 1.2.1-r0: MIT; origin brotli, aports 613a63bfdea80e8e7ab904805c95e19beedbcde3
+- busybox-extras 1.37.0-r30: GPL-2.0-only; origin busybox, aports 1e823a60eb85606954b3a5af5f8e5bbd1ea680cf
 - c-ares 1.34.9-r0: MIT; origin c-ares, aports 3ad686d491ca23a0182a59883595ca078960b958
 - curl 8.23.0-r0: curl; origin curl, aports 856d76205ed1b7f875d32fd7b72eb93912f32acd
 - gcc 15.2.0-r2: GPL-2.0-or-later AND LGPL-2.1-or-later; origin gcc, aports 7fa6e7fd3465c5ff89cc33a56d20bf4d59105aaf

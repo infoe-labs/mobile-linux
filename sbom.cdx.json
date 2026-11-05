@@ -11546,6 +11546,25 @@
     },
     {
       "type": "operating-system",
+      "name": "busybox-extras",
+      "version": "1.37.0-r30",
+      "licenses": [
+        {
+          "license": {
+            "name": "GPL-2.0-only"
+          }
+        }
+      ],
+      "purl": "pkg:apk/alpine/busybox-extras@1.37.0-r30?arch=x86",
+      "properties": [
+        {
+          "name": "aports.commit",
+          "value": "1e823a60eb85606954b3a5af5f8e5bbd1ea680cf"
+        }
+      ]
+    },
+    {
+      "type": "operating-system",
       "name": "c-ares",
       "version": "1.34.9-r0",
       "licenses": [
