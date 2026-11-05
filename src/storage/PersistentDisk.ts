@@ -1,3 +1,4 @@
+import { inflateDisk } from './diskCompression.ts';
 import { storageScope } from '../lib/storage.js';
 import { appConfig } from '../../app.config.js';
 
@@ -50,19 +51,15 @@ export class PersistentDisk {
     if (stored) {
       if (!(stored instanceof ArrayBuffer)) throw new Error('Invalid stored disk seed.');
       compressed = stored;
-      disk.buffer = await new Response(
-        new Blob([stored]).stream().pipeThrough(new DecompressionStream('gzip')),
-      ).arrayBuffer();
-      if (disk.buffer.byteLength === 67108864 && disk.byteLength === 536870912) {
-        const expanded = new Uint8Array(seed);
-        expanded.fill(0);
-        expanded.set(new Uint8Array(disk.buffer));
-        disk.buffer = expanded.buffer;
-      }
-      if (disk.buffer.byteLength !== disk.byteLength)
+      // gzip ISIZE is checked against the streamed output; old seeds expand with zero padding.
+      const size = new DataView(stored).getUint32(stored.byteLength - 4, true);
+      if (size !== disk.byteLength && !(size === 67108864 && disk.byteLength === 536870912))
         throw new Error('Stored disk seed has an invalid size.');
-    } else if (compressedSeed) compressed = compressedSeed.slice(0);
-    else
+      await inflateDisk(stored, seed, size);
+    } else if (compressedSeed) {
+      compressed = compressedSeed.slice(0);
+      await inflateDisk(compressed, seed);
+    } else
       compressed = await new Response(
         new Blob([seed]).stream().pipeThrough(new CompressionStream('gzip')),
       ).arrayBuffer();

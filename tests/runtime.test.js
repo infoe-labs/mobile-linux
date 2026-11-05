@@ -155,3 +155,15 @@ test('snapshot chunks round-trip, delete together, and read previous records', a
   );
   assert.equal(await store.get('partial'), undefined);
 });
+
+test('streamed disk inflation checks exact size and clears expanded space', async () => {
+  const { inflateDisk } = await import('../src/storage/diskCompression.ts');
+  const compressed = await new Response(
+    new Blob([new Uint8Array([1, 2, 3])]).stream().pipeThrough(new CompressionStream('gzip')),
+  ).arrayBuffer();
+  const disk = new Uint8Array(8).fill(99);
+  await inflateDisk(compressed, disk.buffer, 3);
+  assert.deepEqual([...disk], [1, 2, 3, 0, 0, 0, 0, 0]);
+  await assert.rejects(() => inflateDisk(compressed, new ArrayBuffer(2)), /exceeds/);
+  await assert.rejects(() => inflateDisk(compressed, new ArrayBuffer(4)), /invalid size/);
+});

@@ -123,11 +123,9 @@ export class V86Controller extends EventTarget {
         this.dispatchEvent(new Event('change'));
       }
       this.status('preparing', 'Preparing the compressed Alpine disk…');
-      const seed = await new Response(
-        new Blob([assets['rootfs.img.gzip.bin']])
-          .stream()
-          .pipeThrough(new DecompressionStream('gzip')),
-      ).arrayBuffer();
+      if (![67108864, 536870912].includes(manifest.diskBytes))
+        throw new Error('Unsupported disk seed size.');
+      const seed = new ArrayBuffer(manifest.diskBytes);
       this.status('preparing', 'Opening the persistent IndexedDB disk…');
       this.disk = await PersistentDisk.open(
         seed,
