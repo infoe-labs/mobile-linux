@@ -26,7 +26,7 @@ import "fmt"
 func main() { fmt.Println("Hello from Alpine Go!") }
 GO
 go run /tmp/hello.go
-apk add curl git
+apk add curl git busybox-extras
 ```
 
 There is no fake apk wrapper. The original Alpine package manager resolves
@@ -35,7 +35,7 @@ signatures against the guest's distribution keys, and installs into ext4. The
 browser additionally checks each artifact against its build SHA-256 pin.
 Never use `--allow-untrusted` or disable verification to make an installation work.
 
-The shipped repository snapshot includes **go, curl, git and their dependencies**.
+The shipped repository snapshot includes **go, curl, git, busybox-extras and their dependencies**.
 Indexes list other upstream packages, but archives outside the bundle return an
 explicit unavailable response. This is a static subset, not unrestricted access
 to Alpine repositories. Installed curl/git do not gain general networking; Go
@@ -68,8 +68,9 @@ not logged.
 The package bundle is about 122 MiB compressed and 343 MiB fully installed. It is
 excluded from the service-worker precache. The Packages panel reports downloads
 and offers an explicit offline bundle download. Each offline download replaces the previous bundle cache to bound its size.
-Cached snapshots remain fixed until replaced or expired; replace the cache after
-an app update to obtain its newer package snapshot. Download caches use the app ID,
+Online index and catalog requests prefer the deployed snapshot. Offline snapshots
+remain fixed until replaced or expired; replace the cache after an app update to
+make newer packages available offline. Download caches use the app ID,
 base path, feature `packages`, version 1, and a 30-day expiry. Expired entries are
 removed on access, startup, and hourly while the app is open. Closed apps cannot
 schedule cleanup. Delete package download cache removes only that scope.
@@ -104,7 +105,7 @@ particularly expensive. Physical Android/iOS installation tests remain required.
 On Linux with x86 ELF execution support, explicitly run:
 
 ```sh
-python3 scripts/packages/refresh.py go curl git
+python3 scripts/packages/refresh.py go curl git busybox-extras
 npm run assets
 python3 scripts/build-alpine/sources.py
 npm run sbom
@@ -148,3 +149,10 @@ Validation commands: `npm test`, `npm run build`, `npm run test:e2e`, and
 The explicit Go compilation test can take many minutes under CPU emulation.
 Repeat the build and browser checks with `BASE_PATH=/test-subpath/` before
 publishing. Browser emulation is not a real phone installation test.
+
+After updating the app, run `apk update` before adding packages so the guest uses
+the shipped snapshot's versions. `telnet` is provided by `busybox-extras`, not a
+package named `telnet`. If an earlier failed install keeps retrying a package you
+no longer want, remove its request with `apk del busybox-extras`, then retry.
+Telnet still requires network transport that the restricted package adapter does
+not provide; installing the command does not grant arbitrary TCP connectivity.

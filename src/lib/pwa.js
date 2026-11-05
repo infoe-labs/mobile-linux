@@ -39,7 +39,7 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
         if (!worker) return;
         const onStateChange = () => {
           if (worker.state === 'installed') {
-            if (navigator.serviceWorker.controller) pwa.update = true;
+            if (navigator.serviceWorker.controller) pwa.update = !!result.waiting;
             else pwa.ready = true;
             worker.removeEventListener('statechange', onStateChange);
             changed();

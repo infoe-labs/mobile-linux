@@ -53,6 +53,7 @@ export default function App() {
   const [font, setFont] = useState(pref('font', 14));
   const [theme, setTheme] = useState(pref('theme', 'dark'));
   const [search, setSearch] = useState('');
+  const [updating, setUpdating] = useState(false);
   const [extra, setExtra] = useState(true);
   const [compose, setCompose] = useState(false);
   const [install, setInstall] = useState({ canPrompt: false, installed: false });
@@ -156,17 +157,32 @@ export default function App() {
           </button>
         </div>
       )}
-      {pwa.update && (
-        <div className="notice">
-          App update available. Pause Linux and unload AI first.
-          <button
-            disabled={vm.state !== 'paused' || ai.state !== 'unloaded' || fileDirty}
-            onClick={() => act(() => pwa.applyUpdate())}
-          >
-            Update & reload
-          </button>
-        </div>
-      )}
+      {pwa.update &&
+        ['uninitialized', 'running', 'paused', 'stopped', 'failed'].includes(vm.state) && (
+          <div className="notice">
+            App update ready. Linux will be saved and paused before reloading.
+            <button
+              disabled={updating}
+              onClick={() =>
+                void act(async () => {
+                  if (fileDirty)
+                    throw new Error('Save or discard your file edits before updating.');
+                  setUpdating(true);
+                  try {
+                    if (vm.state === 'running') await vm.pause();
+                    ai.unload();
+                    await pwa.applyUpdate();
+                  } catch (error) {
+                    setUpdating(false);
+                    throw error;
+                  }
+                })
+              }
+            >
+              {updating ? 'Saving and updating…' : 'Update & reload'}
+            </button>
+          </div>
+        )}
       {panel === 'search' && (
         <form
           className="search"

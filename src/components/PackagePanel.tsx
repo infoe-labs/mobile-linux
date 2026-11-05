@@ -27,8 +27,9 @@ export default function PackagePanel() {
     <details className="p-2 text-sm">
       <summary>Packages: Go, curl, git</summary>
       <p>
-        Run apk update, then apk add go. Choose 512 MB RAM before booting for Go compilation. Only
-        the bundled repositories are available.
+        Run apk update, then apk add go. Choose 512 MB RAM before booting for Go compilation. Run
+        apk update after an app update. The bundle also includes busybox-extras for telnet. Only the
+        bundled repositories are available.
       </p>
       <button
         disabled={busy}

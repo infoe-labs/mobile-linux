@@ -43,7 +43,7 @@ test('real Alpine commands, shared files, durable disk, snapshots, and offline c
   await page.getByRole('button', { name: 'Compose', exact: true }).click();
   await command(
     page,
-    'uname -a > /root/probe; cat /etc/os-release >> /root/probe; sync; echo PROBE_READY',
+    'uname -a > /root/probe; cat /etc/os-release >> /root/probe; sync; echo PROBE_"READY"',
   );
   await expect(page.locator('.xterm-accessibility-tree')).toContainText('PROBE_READY', {
     timeout: 60000,
@@ -82,7 +82,7 @@ test('real Alpine commands, shared files, durable disk, snapshots, and offline c
   });
   await page.getByRole('button', { name: 'Resume', exact: true }).last().click();
   await page.getByLabel('Close panel').click();
-  await command(page, 'printf changed > /root/probe; sync; echo CHANGE_READY');
+  await command(page, 'printf changed > /root/probe; sync; echo CHANGE_"READY"');
   await expect(page.locator('.xterm-accessibility-tree')).toContainText('CHANGE_READY', {
     timeout: 60000,
   });
