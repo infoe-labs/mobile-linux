@@ -8,7 +8,7 @@ sys.path.insert(0,str(ROOT/'scripts/build-alpine'))
 from build import INPUTS,download_asset
 
 def main():
- parser=argparse.ArgumentParser();parser.add_argument('packages',nargs='*',default=['go','curl','git']);args=parser.parse_args()
+ parser=argparse.ArgumentParser();parser.add_argument('packages',nargs='*',default=['go','curl','git','busybox-extras','nodejs','npm']);args=parser.parse_args()
  with tempfile.TemporaryDirectory(prefix='pocket-apk-') as directory:
   work=pathlib.Path(directory);fs=work/'root';fs.mkdir();archives=work/'archives';archives.mkdir()
   url,digest=INPUTS['rootfs.tar.gz']

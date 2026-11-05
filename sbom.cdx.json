@@ -11508,6 +11508,44 @@
     },
     {
       "type": "operating-system",
+      "name": "npm",
+      "version": "11.11.0-r0",
+      "licenses": [
+        {
+          "license": {
+            "name": "Artistic-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:apk/alpine/npm@11.11.0-r0?arch=noarch",
+      "properties": [
+        {
+          "name": "aports.commit",
+          "value": "6e6685692e442b96154e0ba05aeb5e784685ee44"
+        }
+      ]
+    },
+    {
+      "type": "operating-system",
+      "name": "ada-libs",
+      "version": "3.3.0-r0",
+      "licenses": [
+        {
+          "license": {
+            "name": "( Apache-2.0 OR MIT ) AND MPL-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:apk/alpine/ada-libs@3.3.0-r0?arch=x86",
+      "properties": [
+        {
+          "name": "aports.commit",
+          "value": "d279ef8c31170898285e2a989f62909992bff448"
+        }
+      ]
+    },
+    {
+      "type": "operating-system",
       "name": "binutils",
       "version": "2.45.1-r0",
       "licenses": [
@@ -11579,6 +11617,25 @@
         {
           "name": "aports.commit",
           "value": "3ad686d491ca23a0182a59883595ca078960b958"
+        }
+      ]
+    },
+    {
+      "type": "operating-system",
+      "name": "ca-certificates",
+      "version": "20261020-r0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MPL-2.0 AND MIT"
+          }
+        }
+      ],
+      "purl": "pkg:apk/alpine/ca-certificates@20261020-r0?arch=x86",
+      "properties": [
+        {
+          "name": "aports.commit",
+          "value": "ac857c298f6fd212498ce76bb87836d940cdba2d"
         }
       ]
     },
@@ -11674,6 +11731,44 @@
         {
           "name": "aports.commit",
           "value": "8bfc27fafbf6c27761b150c571c3075a5a3db0de"
+        }
+      ]
+    },
+    {
+      "type": "operating-system",
+      "name": "icu-data-en",
+      "version": "76.1-r1",
+      "licenses": [
+        {
+          "license": {
+            "name": "ICU"
+          }
+        }
+      ],
+      "purl": "pkg:apk/alpine/icu-data-en@76.1-r1?arch=noarch",
+      "properties": [
+        {
+          "name": "aports.commit",
+          "value": "f69cb964d00aba2d395adce1733a78f1318f3da8"
+        }
+      ]
+    },
+    {
+      "type": "operating-system",
+      "name": "icu-libs",
+      "version": "76.1-r1",
+      "licenses": [
+        {
+          "license": {
+            "name": "ICU"
+          }
+        }
+      ],
+      "purl": "pkg:apk/alpine/icu-libs@76.1-r1?arch=x86",
+      "properties": [
+        {
+          "name": "aports.commit",
+          "value": "f69cb964d00aba2d395adce1733a78f1318f3da8"
         }
       ]
     },
@@ -11964,6 +12059,25 @@
     },
     {
       "type": "operating-system",
+      "name": "nodejs",
+      "version": "24.22.1-r1",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:apk/alpine/nodejs@24.22.1-r1?arch=x86",
+      "properties": [
+        {
+          "name": "aports.commit",
+          "value": "7a9ffafb21af91c7361e99129328593957e71592"
+        }
+      ]
+    },
+    {
+      "type": "operating-system",
       "name": "pcre2",
       "version": "10.49-r0",
       "licenses": [
@@ -11978,6 +12092,63 @@
         {
           "name": "aports.commit",
           "value": "d3daff575f2cf4da02cba798b41436b60d843444"
+        }
+      ]
+    },
+    {
+      "type": "operating-system",
+      "name": "simdjson",
+      "version": "3.12.0-r0",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0 OR MIT"
+          }
+        }
+      ],
+      "purl": "pkg:apk/alpine/simdjson@3.12.0-r0?arch=x86",
+      "properties": [
+        {
+          "name": "aports.commit",
+          "value": "2b5e2732388d9b1f35e9bcb835aa26b51607fe98"
+        }
+      ]
+    },
+    {
+      "type": "operating-system",
+      "name": "simdutf",
+      "version": "7.5.0-r1",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0 OR MIT"
+          }
+        }
+      ],
+      "purl": "pkg:apk/alpine/simdutf@7.5.0-r1?arch=x86",
+      "properties": [
+        {
+          "name": "aports.commit",
+          "value": "2a88a9f9caa744b739ef289cd02d69f1beffa5c5"
+        }
+      ]
+    },
+    {
+      "type": "operating-system",
+      "name": "sqlite-libs",
+      "version": "3.53.4-r0",
+      "licenses": [
+        {
+          "license": {
+            "name": "blessing"
+          }
+        }
+      ],
+      "purl": "pkg:apk/alpine/sqlite-libs@3.53.4-r0?arch=x86",
+      "properties": [
+        {
+          "name": "aports.commit",
+          "value": "b45fc81206707171f23602615ce5619166014323"
         }
       ]
     },

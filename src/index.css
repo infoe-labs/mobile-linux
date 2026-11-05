@@ -569,3 +569,22 @@ h1 {
 .ssh-approval input {
   width: 100%;
 }
+
+.package-request {
+  position: fixed;
+  z-index: 60;
+  top: max(1rem, env(safe-area-inset-top));
+  left: 5%;
+  width: 90%;
+  max-height: 85dvh;
+  overflow: auto;
+  background: var(--bg, #10161b);
+  color: var(--text, #d5dfe5);
+  border: 2px solid #8dd8bd;
+  border-radius: 12px;
+  box-shadow: 0 0 0 100vmax #0009;
+}
+.package-request a {
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+}

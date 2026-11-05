@@ -35,7 +35,7 @@ signatures against the guest's distribution keys, and installs into ext4. The
 browser additionally checks each artifact against its build SHA-256 pin.
 Never use `--allow-untrusted` or disable verification to make an installation work.
 
-The shipped repository snapshot includes **go, curl, git, busybox-extras and their dependencies**.
+The shipped repository snapshot includes **go, curl, git, busybox-extras, nodejs, npm and their dependencies**.
 Indexes list other upstream packages, but archives outside the bundle return an
 explicit unavailable response. This is a static subset, not unrestricted access
 to Alpine repositories. Installed curl/git do not gain general networking; Go
@@ -65,7 +65,7 @@ not logged.
 
 ## Downloads, offline use and retention
 
-The package bundle is about 122 MiB compressed and 343 MiB fully installed. It is
+The package bundle is about 146 MiB compressed; installed size depends on the selected packages. It is
 excluded from the service-worker precache. The Packages panel reports downloads
 and offers an explicit offline bundle download. Each offline download replaces the previous bundle cache to bound its size.
 Online index and catalog requests prefer the deployed snapshot. Offline snapshots
@@ -105,7 +105,7 @@ particularly expensive. Physical Android/iOS installation tests remain required.
 On Linux with x86 ELF execution support, explicitly run:
 
 ```sh
-python3 scripts/packages/refresh.py go curl git busybox-extras
+python3 scripts/packages/refresh.py go curl git busybox-extras nodejs npm
 npm run assets
 python3 scripts/build-alpine/sources.py
 npm run sbom
@@ -159,7 +159,7 @@ not provide; installing the command does not grant arbitrary TCP connectivity.
 
 ## Download and import other APKs
 
-When apk requests an archive outside the bundle, the Packages panel opens and
+When apk requests an archive outside the bundle, a Packages need downloading dialog opens and
 shows a Download link to that archive on Alpine's public CDN. The browser opens
 the download separately; the app cannot read it until you choose it using
 **Import downloaded APK files**. Select dependency APKs together, then press
@@ -177,3 +177,9 @@ may leave a `.part` file there. Browser Downloads retention is controlled by you
 device; remove the original downloads separately. The host browser never executes
 APK contents. Cold boot the updated app before importing; old RAM snapshots may
 contain a guest helper that lacks chunked transfer support.
+
+Node.js and npm are included in the static snapshot. After updating the app, run
+`apk add --no-cache nodejs npm`. This refreshes the guest indexes and installs the
+shipped dependency versions. If an old offline bundle is retained, replace it
+to make the expanded package set available offline. Node can execute local JS;
+installation does not grant npm access to the npm registry or arbitrary sockets.
