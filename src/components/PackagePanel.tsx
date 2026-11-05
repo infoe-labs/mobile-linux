@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { importAPKs } from '../lib/packages/import';
 import { terminal } from '../terminal/TerminalController';
 import { vm } from '../vm/V86Controller';
 import { cachePackages, deletePackageCache, prunePackageCache } from '../lib/packages/cache';
 export default function PackagePanel() {
+  const [prompt, setPrompt] = useState(false);
+  const seenMissing = useRef(0);
   const [, refresh] = useState(0);
   const [imported, setImported] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -11,6 +13,10 @@ export default function PackagePanel() {
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined;
     const update = () => {
+      if (vm.packages.missing.size > seenMissing.current) {
+        seenMissing.current = vm.packages.missing.size;
+        setPrompt(true);
+      }
       if (!timer)
         timer = setTimeout(() => {
           timer = undefined;
@@ -27,8 +33,25 @@ export default function PackagePanel() {
     };
   }, []);
   return (
-    <details className="p-2 text-sm" open={vm.packages.missing.size > 0 || undefined}>
+    <details
+      className={prompt ? 'package-request p-4 text-sm' : 'p-2 text-sm'}
+      open={prompt || undefined}
+      role={prompt ? 'dialog' : undefined}
+      aria-labelledby={prompt ? 'package-request-title' : undefined}
+    >
       <summary>Packages: Go, curl, git</summary>
+      {prompt && (
+        <div>
+          <h2 id="package-request-title">Packages need downloading</h2>
+          <p>
+            Alpine could not fetch these archives. Download them in your browser, choose the files
+            below, then install them in Alpine.
+          </p>
+          <button autoFocus onClick={() => setPrompt(false)}>
+            Back to terminal
+          </button>
+        </div>
+      )}
       {vm.packages.missing.size > 0 && (
         <section aria-label="Missing package downloads">
           <p>
@@ -85,8 +108,9 @@ export default function PackagePanel() {
       </p>
       <p>
         Run apk update, then apk add go. Choose 512 MB RAM before booting for Go compilation. Run
-        apk update after an app update. The bundle also includes busybox-extras for telnet. Only the
-        bundled repositories are available.
+        apk update after an app update. The bundle also includes busybox-extras for telnet. Node.js
+        and npm are bundled too: run apk add --no-cache nodejs npm. Only the bundled repositories
+        are available.
       </p>
       <button
         disabled={busy}
@@ -103,7 +127,7 @@ export default function PackagePanel() {
           }
         }}
       >
-        Download offline bundle (~122 MiB)
+        Download offline bundle (~146 MiB)
       </button>
       <button
         disabled={busy}

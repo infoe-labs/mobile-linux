@@ -64,15 +64,20 @@ replace inspection of the bundled binary and image components.
 - e2fsprogs 1.47.3-r0: GPL-2.0-or-later AND LGPL-2.0-or-later AND BSD-3-Clause AND MIT; origin e2fsprogs, aports 00f1c5f4b16e16ff5dc6ac6dc97e8445e842fecb
 - libcom_err 1.47.3-r0: GPL-2.0-or-later AND LGPL-2.0-or-later AND BSD-3-Clause AND MIT; origin e2fsprogs, aports 00f1c5f4b16e16ff5dc6ac6dc97e8445e842fecb
 - go 1.25.10-r0: BSD-3-Clause; origin go, aports 192902c2137aff74c9d8c579e0c53f00e997a5bc
+- npm 11.11.0-r0: Artistic-2.0; origin npm, aports 6e6685692e442b96154e0ba05aeb5e784685ee44
+- ada-libs 3.3.0-r0: ( Apache-2.0 OR MIT ) AND MPL-2.0; origin ada, aports d279ef8c31170898285e2a989f62909992bff448
 - binutils 2.45.1-r0: GPL-2.0-or-later AND LGPL-2.1-or-later AND BSD-3-Clause; origin binutils, aports accf42ac98479ed9df869377cb86c70da2011e72
 - brotli-libs 1.2.1-r0: MIT; origin brotli, aports 613a63bfdea80e8e7ab904805c95e19beedbcde3
 - busybox-extras 1.37.0-r30: GPL-2.0-only; origin busybox, aports 1e823a60eb85606954b3a5af5f8e5bbd1ea680cf
 - c-ares 1.34.9-r0: MIT; origin c-ares, aports 3ad686d491ca23a0182a59883595ca078960b958
+- ca-certificates 20261020-r0: MPL-2.0 AND MIT; origin ca-certificates, aports ac857c298f6fd212498ce76bb87836d940cdba2d
 - curl 8.23.0-r0: curl; origin curl, aports 856d76205ed1b7f875d32fd7b72eb93912f32acd
 - gcc 15.2.0-r2: GPL-2.0-or-later AND LGPL-2.1-or-later; origin gcc, aports 7fa6e7fd3465c5ff89cc33a56d20bf4d59105aaf
 - git 2.52.0-r0: GPL-2.0-only; origin git, aports fd43f6a336353b49fe5e9e3a3e8496ad05b53902
 - git-init-template 2.52.0-r0: GPL-2.0-only; origin git, aports fd43f6a336353b49fe5e9e3a3e8496ad05b53902
 - gmp 6.3.0-r4: LGPL-3.0-or-later OR GPL-2.0-or-later; origin gmp, aports 8bfc27fafbf6c27761b150c571c3075a5a3db0de
+- icu-data-en 76.1-r1: ICU; origin icu, aports f69cb964d00aba2d395adce1733a78f1318f3da8
+- icu-libs 76.1-r1: ICU; origin icu, aports f69cb964d00aba2d395adce1733a78f1318f3da8
 - isl26 0.26-r1: MIT; origin isl26, aports 84a227baf001b6e0208e3352b294e4d7a40e93de
 - jansson 2.14.1-r0: MIT; origin jansson, aports 9161ac3604718ebb3c85b5795f0a084d45362571
 - libatomic 15.2.0-r2: GPL-2.0-or-later AND LGPL-2.1-or-later; origin gcc, aports 7fa6e7fd3465c5ff89cc33a56d20bf4d59105aaf
@@ -88,7 +93,11 @@ replace inspection of the bundled binary and image components.
 - mpfr4 4.2.2-r0: LGPL-3.0-or-later; origin mpfr4, aports 011955c827a3e7545ea82225e1f20c6a06617c7a
 - musl-dev 1.2.5-r24: MIT; origin musl, aports fd05fc094264bce4fb76efc6c7f61ba4abfcb609
 - nghttp2-libs 1.69.0-r0: MIT; origin nghttp2, aports 40d265063c14143f5ef8a35c216b9e6392d120a7
+- nodejs 24.22.1-r1: MIT; origin nodejs, aports 7a9ffafb21af91c7361e99129328593957e71592
 - pcre2 10.49-r0: BSD-3-Clause; origin pcre2, aports d3daff575f2cf4da02cba798b41436b60d843444
+- simdjson 3.12.0-r0: Apache-2.0 OR MIT; origin simdjson, aports 2b5e2732388d9b1f35e9bcb835aa26b51607fe98
+- simdutf 7.5.0-r1: Apache-2.0 OR MIT; origin simdutf, aports 2a88a9f9caa744b739ef289cd02d69f1beffa5c5
+- sqlite-libs 3.53.4-r0: blessing; origin sqlite, aports b45fc81206707171f23602615ce5619166014323
 - zstd-libs 1.5.7-r2: BSD-3-Clause OR GPL-2.0-or-later; origin zstd, aports 3c6e2ee2b16f403d53eab39c4426eb61f003c322
 
 Corresponding packaging, patches, configurations and upstream sources are distributed at [sources/index.html](sources/index.html).

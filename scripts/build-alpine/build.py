@@ -69,7 +69,7 @@ def main():
     if not any((p['P'],p['V'],p['A']) == (record['P'],record['V'],record['A']) for p in package_records): package_records.append(record)
     for member in package:
      if member.name.startswith(('lib/','usr/lib/','usr/bin/')): package.extract(member,payload,filter='data')
-  for name,dest in [('pocket-ssh','ssh'),('pocket-ssh-proxy','proxy')]:
+  for name,dest in [('pocket-ssh','ssh'),('pocket-ssh-proxy','proxy'),('browser-fetch','browser-fetch'),('browser-command','browser-command')]:
    shutil.copyfile(ROOT/'scripts/build-alpine'/name,payload/dest)
    (payload/dest).chmod(0o755)
   for name,(version,digest) in RESIZE_PACKAGES.items():

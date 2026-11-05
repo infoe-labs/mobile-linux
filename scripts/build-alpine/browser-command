@@ -1,0 +1,10 @@
+#!/bin/sh
+name=${0##*/}
+/usr/bin/"$name" "$@"
+status=$?
+case "$name:$status" in curl:6|curl:7|curl:35|wget:1|git:128) ;; *) exit "$status";; esac
+if [ "$name" = git ] && [ "$1" != clone ]; then exit "$status"; fi
+url=
+for value do case "$value" in https://*) url=$value;; esac; done
+[ -z "$url" ] || /opt/pocket-ssh/browser-fetch "$url"
+exit "$status"

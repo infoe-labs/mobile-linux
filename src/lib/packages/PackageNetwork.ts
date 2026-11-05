@@ -1,7 +1,8 @@
 import { packageResource } from './cache';
 /** A static repository transport, not an internet gateway. apk verifies Alpine signatures. */
 export class PackageNetwork extends EventTarget {
-  message = 'Bundled repositories: Go, curl, git and busybox-extras (plus dependencies).';
+  message =
+    'Bundled repositories: Go, curl, git, busybox-extras, nodejs and npm (plus dependencies).';
   missing = new Map<string, string>();
   received = 0;
   total = 0;
@@ -49,7 +50,7 @@ export class PackageNetwork extends EventTarget {
             'https://dl-cdn.alpinelinux.org/alpine/v3.23/' + path,
           );
         this.update(
-          'This package is not included in the static bundle. Supported packages: go, curl, git, busybox-extras.',
+          'This package is not included in the static bundle. Supported packages: go, curl, git, busybox-extras, nodejs, npm.',
         );
         return new Response(this.message, { status: 404 });
       }

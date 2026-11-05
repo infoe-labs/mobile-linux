@@ -3,7 +3,9 @@
     "go",
     "curl",
     "git",
-    "busybox-extras"
+    "busybox-extras",
+    "nodejs",
+    "npm"
   ],
   "files": [
     {
@@ -11,6 +13,18 @@
       "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/community/x86/go-1.25.10-r0.apk",
       "bytes": 45344853,
       "sha256": "e997ec2cf140b905f4cf788ff4d2fef1d6581064138337f0aabc1c662f10ac42"
+    },
+    {
+      "path": "community/x86/npm-11.11.0-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/community/x86/npm-11.11.0-r0.apk",
+      "bytes": 2312149,
+      "sha256": "6dc7c7d81703885a9ec34e2d81755c2eb83cb13a9061dd18096fb51cf5702148"
+    },
+    {
+      "path": "main/x86/ada-libs-3.3.0-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/ada-libs-3.3.0-r0.apk",
+      "bytes": 248521,
+      "sha256": "b327081f62a7095c84d56a51d4df9c9444ebdf2c6bd8d031bdfb6b2eaf739913"
     },
     {
       "path": "main/x86/binutils-2.45.1-r0.apk",
@@ -31,6 +45,12 @@
       "sha256": "7d79f2a74c32b539be982122c3aa5873bf90bd9a413a2887215f6006d6d546c9"
     },
     {
+      "path": "main/x86/busybox-binsh-1.37.0-r30.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/busybox-binsh-1.37.0-r30.apk",
+      "bytes": 1563,
+      "sha256": "a2bbfbc28d2981d21afb40961cc2dd2145a02372e1980471a82e090db33b5e39"
+    },
+    {
       "path": "main/x86/busybox-extras-1.37.0-r30.apk",
       "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/busybox-extras-1.37.0-r30.apk",
       "bytes": 65059,
@@ -41,6 +61,12 @@
       "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/c-ares-1.34.9-r0.apk",
       "bytes": 120914,
       "sha256": "18e6c5ed9e6740e298290ef1c6cae3526112998f5c20a1e858591e35fea46c88"
+    },
+    {
+      "path": "main/x86/ca-certificates-20261020-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/ca-certificates-20261020-r0.apk",
+      "bytes": 129810,
+      "sha256": "86a56994bffa67e754e9cc66e402516612f628b0322effa1f3b8da3146de671c"
     },
     {
       "path": "main/x86/ca-certificates-bundle-20261020-r0.apk",
@@ -77,6 +103,18 @@
       "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/gmp-6.3.0-r4.apk",
       "bytes": 200304,
       "sha256": "c85752f246b011d4a2e6ee8bb1631b47d73afce774aec76685a2ca506901991e"
+    },
+    {
+      "path": "main/x86/icu-data-en-76.1-r1.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/icu-data-en-76.1-r1.apk",
+      "bytes": 1016030,
+      "sha256": "793821601a3979efaa91ca37baa0200a9d0c7d2c0372883028f889262e786feb"
+    },
+    {
+      "path": "main/x86/icu-libs-76.1-r1.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/icu-libs-76.1-r1.apk",
+      "bytes": 2065947,
+      "sha256": "14e905b66bd963934bf597b01ce8b531a749787c6f0813437794664d5cd53c03"
     },
     {
       "path": "main/x86/isl26-0.26-r1.apk",
@@ -187,10 +225,34 @@
       "sha256": "d57e146934f1cf9ccc9eb6cda7a02a740685e89a5589bb645fcb4bf2d2424427"
     },
     {
+      "path": "main/x86/nodejs-24.22.1-r1.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/nodejs-24.22.1-r1.apk",
+      "bytes": 17792177,
+      "sha256": "296064be4efdf89842c485ae825028afab6c52b77c9f15817a231a2dfd4d19fd"
+    },
+    {
       "path": "main/x86/pcre2-10.49-r0.apk",
       "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/pcre2-10.49-r0.apk",
       "bytes": 326944,
       "sha256": "f97801ee05d276d6755088f4d8c17eebd29d9110e2dd00bf9396eafeb418b1a2"
+    },
+    {
+      "path": "main/x86/simdjson-3.12.0-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/simdjson-3.12.0-r0.apk",
+      "bytes": 49539,
+      "sha256": "c44a4e48d9a2431ddef540b9bc8dfdb4591edf8a819d603098593e1bd7bf0601"
+    },
+    {
+      "path": "main/x86/simdutf-7.5.0-r1.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/simdutf-7.5.0-r1.apk",
+      "bytes": 52081,
+      "sha256": "1ceceba60ee2c7a1fdd8c125db8853aad74c845bddfe51be9937e36bf3c046a3"
+    },
+    {
+      "path": "main/x86/sqlite-libs-3.53.4-r0.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/sqlite-libs-3.53.4-r0.apk",
+      "bytes": 952794,
+      "sha256": "e1cec828f9102cbd549b018ad695e57d0e5cfa937f9208096d80d4917768a29a"
     },
     {
       "path": "main/x86/ssl_client-1.37.0-r30.apk",

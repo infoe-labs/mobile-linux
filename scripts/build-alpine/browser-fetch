@@ -1,0 +1,7 @@
+#!/bin/sh
+[ "$#" = 1 ] || { echo 'Usage: browser-fetch https://host/file' >&2; exit 2; }
+case "$1" in https://*) ;; *) echo 'HTTPS URL required.' >&2; exit 2;; esac
+[ "${#1}" -le 2048 ] || exit 2
+payload=$(printf '%s' "$1" | base64 | tr -d '\n')
+printf 'AP1\t0\tDOWNLOAD\t%s\n' "$payload" >/dev/ttyS1
+echo 'Browser download requested. Approve it in the app, then import the downloaded file.' >&2

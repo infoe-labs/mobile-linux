@@ -101,3 +101,9 @@ interrupted writes roll back together. Deletion removes all payload chunks.
 The reader accepts earlier ArrayBuffer records without rewriting or deleting them;
 existing virtual-hardware compatibility checks still apply. Snapshot namespace,
 retention, explicit deletion, and exported backup format remain unchanged.
+
+Disk preparation streams gzip output directly into the preallocated disk buffer.
+When a stored seed exists, the downloaded seed is not inflated first. The retained
+seed and block schema are unchanged; old 64 MiB seeds are streamed into the larger
+buffer with zero padding, and expanded length is checked before replaying blocks.
+This avoids collecting another full-disk response buffer during preparation.

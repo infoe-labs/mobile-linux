@@ -26,4 +26,13 @@ test('downloaded APKs import and install with real guest apk verification', asyn
   await expect(page.locator('.xterm-accessibility-tree')).toContainText('IMPORT_OK', {
     timeout: 30000,
   });
+  await input.pressSequentially('apk add python3', { delay: 2 });
+  await input.press('Enter');
+  await expect(page.getByRole('dialog', { name: 'Packages need downloading' })).toBeVisible({
+    timeout: 30000,
+  });
+  await expect(page.getByRole('link', { name: /Download python3-/ }).first()).toHaveAttribute(
+    'href',
+    /^https:\/\/dl-cdn\.alpinelinux\.org\/alpine\/v3\.23\//,
+  );
 });
