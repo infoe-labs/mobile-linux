@@ -38,7 +38,7 @@ test('signed static repositories install curl and git, fail honestly and persist
   await context.setOffline(true);
   await command(
     page,
-    'apk update && apk add curl git && curl --version && git --version; echo PACKAGES_DONE:$?',
+    'apk update && apk add curl git busybox-extras && command -v telnet && curl --version && git --version; echo PACKAGES_DONE:$?',
   );
   await expect(page.locator('.xterm-accessibility-tree')).toContainText('PACKAGES_DONE:0', {
     timeout: 180000,

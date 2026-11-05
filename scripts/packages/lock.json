@@ -2,7 +2,8 @@
   "supported": [
     "go",
     "curl",
-    "git"
+    "git",
+    "busybox-extras"
   ],
   "files": [
     {
@@ -22,6 +23,18 @@
       "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/brotli-libs-1.2.1-r0.apk",
       "bytes": 409457,
       "sha256": "2dcef0337ba5633cbd0ef9f678120f7d3f858f2adf9a4dd74a984dd415b2082e"
+    },
+    {
+      "path": "main/x86/busybox-1.37.0-r30.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/busybox-1.37.0-r30.apk",
+      "bytes": 506962,
+      "sha256": "7d79f2a74c32b539be982122c3aa5873bf90bd9a413a2887215f6006d6d546c9"
+    },
+    {
+      "path": "main/x86/busybox-extras-1.37.0-r30.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/busybox-extras-1.37.0-r30.apk",
+      "bytes": 65059,
+      "sha256": "bde5434d40eda3e33b11abe8f514a799005a8cd38ee6052fb24d6d88c6c08ce0"
     },
     {
       "path": "main/x86/c-ares-1.34.9-r0.apk",
@@ -178,6 +191,12 @@
       "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/pcre2-10.49-r0.apk",
       "bytes": 326944,
       "sha256": "f97801ee05d276d6755088f4d8c17eebd29d9110e2dd00bf9396eafeb418b1a2"
+    },
+    {
+      "path": "main/x86/ssl_client-1.37.0-r30.apk",
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86/ssl_client-1.37.0-r30.apk",
+      "bytes": 5007,
+      "sha256": "ea2e8c5129629ca25fb429486e9c679e9c43e3a6d9072a4a1f946672dd6bab23"
     },
     {
       "path": "main/x86/zlib-1.3.2-r1.apk",

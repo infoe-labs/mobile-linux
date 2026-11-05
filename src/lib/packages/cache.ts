@@ -11,6 +11,15 @@ const assetPath = (path: string) => (path.endsWith('.gz') ? path + '.bin' : path
 export async function packageResource(path: string): Promise<Response> {
   const url = new URL(import.meta.env.BASE_URL + 'packages/' + assetPath(path), location.origin)
     .href;
+  // Online metadata must match the currently deployed bundle, not an older offline snapshot.
+  if (path === 'catalog.json' || path.endsWith('APKINDEX.tar.gz')) {
+    try {
+      const current = await fetch(url, { credentials: 'omit', cache: 'no-store' });
+      if (current.ok) return current;
+    } catch {
+      /* Use the explicitly downloaded snapshot while offline. */
+    }
+  }
   try {
     const cache = await caches.open(name);
     const hit = await cache.match(url);
