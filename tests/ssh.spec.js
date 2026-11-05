@@ -161,6 +161,9 @@ test('guest ssh asks permission, verifies host key and runs a real encrypted ses
     });
     wrongHost = true;
     await type('ssh tester@ssh.example.test');
+    await expect(page.getByRole('heading', { name: 'Allow SSH connection' })).toBeVisible({
+      timeout: 30000,
+    });
     await page.getByLabel('SSH bridge URL').fill('wss://bridge.example.test/');
     await page.getByLabel('Bridge access token').fill('synthetic-bridge-token');
     await page.getByRole('button', { name: 'Allow connection', exact: true }).click();
