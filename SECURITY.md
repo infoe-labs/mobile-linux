@@ -6,9 +6,10 @@ sandbox. A malicious guest can forge helper responses and can modify its disk.
 The bridge is a correctness boundary between trusted application code and
 untrusted guest data, not an authentication mechanism against guest root.
 
-No analytics, accounts, command logging, remote shell, guest network tunnel or
+No analytics, app accounts, command logging, general guest network tunnel or
 cloud inference. App downloads contact the static host; explicit model downloads
-contact Hugging Face/CDNs. Prompts and terminal output are not sent to servers.
+contact Hugging Face/CDNs. Assistant prompts are not uploaded. Optional SSH sends session data to the chosen
+SSH server through an explicitly approved bridge.
 The optional assistant consumes only its input and explicitly approved selections.
 Model output is untrusted and never automatically executed.
 
@@ -31,3 +32,7 @@ clears its own namespace; it does not erase other same-origin applications.
 Report issues privately through repository security advisories where available.
 Do not post terminal contents, real credentials, personal machine paths or raw
 user data in public issues or CI artifacts. Use synthetic reproductions.
+
+Optional SSH connects only after application consent through a user-controlled
+WSS bridge. SSH host-key verification remains in the guest. See [SSH data flows,
+retention and deployment requirements](docs/SSH.md).

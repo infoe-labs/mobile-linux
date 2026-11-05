@@ -14,7 +14,7 @@ npm run build
 ```
 
 The build downloads checksum-pinned Alpine 3.23.7 x86 minirootfs and linux-virt
-6.18.60-r0, builds a 64 MiB ext4 root, and generates an initramfs with the modules
+6.18.60-r0, builds a 512 MiB ext4 root, and generates an initramfs with the modules
 needed for IDE/ext4 boot. Firmware is pinned by source commit and SHA-256. WASM
 comes from the exact npm lockfile. `public/vm/assets.json` records every output
 hash and input URL. Generated binaries and source bundles are excluded from Git.

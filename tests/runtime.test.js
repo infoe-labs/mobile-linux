@@ -100,7 +100,58 @@ test('dedicated bridge matches IDs and supports cancellation without parsing ter
 });
 test('snapshot imports reject invalid headers and oversize data before touching a VM', async () => {
   await assert.rejects(() => importSnapshot(new File(['bad header'], 'bad.snapshot')), /signature/);
-  await assert.rejects(() => importSnapshot({ size: 513 * 1024 * 1024 }), /limit/);
+  await assert.rejects(() => importSnapshot({ size: 1537 * 1024 * 1024 }), /limit/);
   const blob = new Blob(['APSNAP01', new Uint32Array([99999])]);
   await assert.rejects(() => importSnapshot(new File([blob], 'bad.snapshot')), /header/);
+});
+test('64 MiB persistent disks expand without changing original offsets or saved blocks', async () => {
+  const { IDBFactory } = await import('fake-indexeddb');
+  globalThis.indexedDB = new IDBFactory();
+  const seed = new ArrayBuffer(67108864);
+  new Uint8Array(seed)[100] = 41;
+  const disk = await PersistentDisk.open(seed, 'growth-fixture', () =>
+    assert.fail('write failure'),
+  );
+  await new Promise((resolve) => disk.set(8192, new Uint8Array([99]), resolve));
+  await disk.flush();
+  const grown = await PersistentDisk.open(new ArrayBuffer(536870912), 'growth-fixture', () =>
+    assert.fail('write failure'),
+  );
+  assert.equal(grown.byteLength, 536870912);
+  assert.equal(new Uint8Array(grown.buffer)[100], 41);
+  assert.equal(new Uint8Array(grown.buffer)[8192], 99);
+  assert.equal(new Uint8Array(grown.buffer)[67108864], 0);
+});
+
+test('snapshot chunks round-trip, delete together, and read previous records', async () => {
+  const { saveStoredSnapshot, loadStoredSnapshot, removeStoredSnapshot } =
+    await import('../src/storage/SnapshotStorage.ts');
+  const { createIndexedStore } = await import('../src/lib/storage.js');
+  const { IDBFactory } = await import('fake-indexeddb');
+  const store = createIndexedStore(
+    { appId: 'synthetic', basePath: '/', namespace: 'snapshots', version: 1 },
+    new IDBFactory(),
+  );
+  const original = {
+    format: 1,
+    state: new Uint8Array([1, 2]).buffer,
+    disk: new ArrayBuffer(9 * 1024 * 1024),
+  };
+  new Uint8Array(original.disk)[8 * 1024 * 1024] = 42;
+  await saveStoredSnapshot(store, 'sample', original);
+  assert.deepEqual(await loadStoredSnapshot(store, 'sample'), original);
+  await removeStoredSnapshot(store, 'sample');
+  assert.equal(await store.get('sample:disk:1'), undefined);
+  await assert.rejects(() => loadStoredSnapshot(store, 'sample'), /unavailable/);
+  await store.set('previous', original, { ttlMs: null });
+  assert.deepEqual(await loadStoredSnapshot(store, 'previous'), original);
+  function* failedWrite() {
+    yield ['partial', 1];
+    throw new Error('synthetic interruption');
+  }
+  await assert.rejects(
+    () => store.setMany(failedWrite(), { ttlMs: null }),
+    /synthetic interruption/,
+  );
+  assert.equal(await store.get('partial'), undefined);
 });

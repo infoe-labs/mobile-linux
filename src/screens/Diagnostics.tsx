@@ -17,7 +17,7 @@ export default function Diagnostics({ act }: { act: Act }) {
     <>
       <h3>Storage & diagnostics</h3>
       <p>
-        Guest RAM: {vm.memory} MB · Disk: 64 MiB · Boot:{' '}
+        Guest RAM: {vm.memory} MB · Disk: 512 MiB · Boot:{' '}
         {vm.bootMs ? (vm.bootMs / 1000).toFixed(1) + 's' : 'not completed'}
         <br />
         AI: {ai.state} · WebGPU: {data ? String(data.webgpu) : 'checking'}

@@ -123,6 +123,16 @@ export function createIndexedStore(scope, factory = globalThis.indexedDB) {
       const entry = record(value, ttlMs);
       return transact('readwrite', (store) => store.put(entry, id));
     },
+    setMany(entries, { ttlMs } = {}) {
+      return transact('readwrite', (store) => {
+        for (const [key, value] of entries) store.put(record(value, ttlMs), keyName(key));
+      });
+    },
+    removeMany(keys) {
+      return transact('readwrite', (store) => {
+        for (const key of keys) store.delete(keyName(key));
+      });
+    },
     get(key) {
       const id = keyName(key);
       return transact('readwrite', (store, done) => {

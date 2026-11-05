@@ -53,6 +53,42 @@ replace inspection of the bundled binary and image components.
 - ssl_client 1.37.0-r30: GPL-2.0-only; origin busybox, aports 1e823a60eb85606954b3a5af5f8e5bbd1ea680cf
 - zlib 1.3.2-r1: Zlib; origin zlib, aports b92621a82657b055485976b304462bddf9aa9183
 - linux-virt 6.18.60-r0: GPL-2.0-only; origin linux-lts, aports 7c0621dbd415d5a9433635a5522c046a1ab1d2a5
+- dropbear-dbclient 2025.88-r1: MIT; origin dropbear, aports fc064e12dcef4e7c3567c0fd8fda666fdfcf047c
+- utmps-libs 0.1.3.1-r0: ISC; origin utmps, aports b8ca1510561d9fa9594fd4e3b5223d7749e6da0a
+- skalibs-libs 2.14.4.0-r0: ISC; origin skalibs, aports b9c5072464571b09666b65869410ee3d40d2ebb2
+- e2fsprogs-extra 1.47.3-r0: GPL-2.0-or-later AND LGPL-2.0-or-later AND BSD-3-Clause AND MIT; origin e2fsprogs, aports 00f1c5f4b16e16ff5dc6ac6dc97e8445e842fecb
+- e2fsprogs-libs 1.47.3-r0: GPL-2.0-or-later AND LGPL-2.0-or-later AND BSD-3-Clause AND MIT; origin e2fsprogs, aports 00f1c5f4b16e16ff5dc6ac6dc97e8445e842fecb
+- libblkid 2.41.6-r1: LGPL-2.1-or-later; origin util-linux, aports 96f05433b217acf92bee031df551b10d8b3a1ec2
+- libeconf 0.8.3-r0: MIT; origin libeconf, aports 36b72fb9c0502028e6dd976e5ec5ee852fac39be
+- libuuid 2.41.6-r1: BSD-3-Clause; origin util-linux, aports 96f05433b217acf92bee031df551b10d8b3a1ec2
+- e2fsprogs 1.47.3-r0: GPL-2.0-or-later AND LGPL-2.0-or-later AND BSD-3-Clause AND MIT; origin e2fsprogs, aports 00f1c5f4b16e16ff5dc6ac6dc97e8445e842fecb
+- libcom_err 1.47.3-r0: GPL-2.0-or-later AND LGPL-2.0-or-later AND BSD-3-Clause AND MIT; origin e2fsprogs, aports 00f1c5f4b16e16ff5dc6ac6dc97e8445e842fecb
+- go 1.25.10-r0: BSD-3-Clause; origin go, aports 192902c2137aff74c9d8c579e0c53f00e997a5bc
+- binutils 2.45.1-r0: GPL-2.0-or-later AND LGPL-2.1-or-later AND BSD-3-Clause; origin binutils, aports accf42ac98479ed9df869377cb86c70da2011e72
+- brotli-libs 1.2.1-r0: MIT; origin brotli, aports 613a63bfdea80e8e7ab904805c95e19beedbcde3
+- c-ares 1.34.9-r0: MIT; origin c-ares, aports 3ad686d491ca23a0182a59883595ca078960b958
+- curl 8.23.0-r0: curl; origin curl, aports 856d76205ed1b7f875d32fd7b72eb93912f32acd
+- gcc 15.2.0-r2: GPL-2.0-or-later AND LGPL-2.1-or-later; origin gcc, aports 7fa6e7fd3465c5ff89cc33a56d20bf4d59105aaf
+- git 2.52.0-r0: GPL-2.0-only; origin git, aports fd43f6a336353b49fe5e9e3a3e8496ad05b53902
+- git-init-template 2.52.0-r0: GPL-2.0-only; origin git, aports fd43f6a336353b49fe5e9e3a3e8496ad05b53902
+- gmp 6.3.0-r4: LGPL-3.0-or-later OR GPL-2.0-or-later; origin gmp, aports 8bfc27fafbf6c27761b150c571c3075a5a3db0de
+- isl26 0.26-r1: MIT; origin isl26, aports 84a227baf001b6e0208e3352b294e4d7a40e93de
+- jansson 2.14.1-r0: MIT; origin jansson, aports 9161ac3604718ebb3c85b5795f0a084d45362571
+- libatomic 15.2.0-r2: GPL-2.0-or-later AND LGPL-2.1-or-later; origin gcc, aports 7fa6e7fd3465c5ff89cc33a56d20bf4d59105aaf
+- libcurl 8.23.0-r0: curl; origin curl, aports 856d76205ed1b7f875d32fd7b72eb93912f32acd
+- libexpat 2.10.0-r0: MIT; origin expat, aports 291311a14701f97a0f8483d0c2fe6c71efa4c590
+- libgcc 15.2.0-r2: GPL-2.0-or-later AND LGPL-2.1-or-later; origin gcc, aports 7fa6e7fd3465c5ff89cc33a56d20bf4d59105aaf
+- libgomp 15.2.0-r2: GPL-2.0-or-later AND LGPL-2.1-or-later; origin gcc, aports 7fa6e7fd3465c5ff89cc33a56d20bf4d59105aaf
+- libidn2 2.3.8-r0: GPL-2.0-or-later OR LGPL-3.0-or-later; origin libidn2, aports 8240e09aa2fdd8f9979b2016be082273965aff0c
+- libpsl 0.21.5-r3: MIT; origin libpsl, aports 6bd45b53fb316dc01bda59f5feaf1e127eb64f22
+- libstdc++ 15.2.0-r2: GPL-2.0-or-later AND LGPL-2.1-or-later; origin gcc, aports 7fa6e7fd3465c5ff89cc33a56d20bf4d59105aaf
+- libunistring 1.4.1-r0: GPL-2.0-or-later OR LGPL-3.0-or-later; origin libunistring, aports cd5407e1341869af38d836fe83f9dbc98799f43a
+- mpc1 1.3.1-r1: LGPL-3.0-or-later; origin mpc1, aports 84a227baf001b6e0208e3352b294e4d7a40e93de
+- mpfr4 4.2.2-r0: LGPL-3.0-or-later; origin mpfr4, aports 011955c827a3e7545ea82225e1f20c6a06617c7a
+- musl-dev 1.2.5-r24: MIT; origin musl, aports fd05fc094264bce4fb76efc6c7f61ba4abfcb609
+- nghttp2-libs 1.69.0-r0: MIT; origin nghttp2, aports 40d265063c14143f5ef8a35c216b9e6392d120a7
+- pcre2 10.49-r0: BSD-3-Clause; origin pcre2, aports d3daff575f2cf4da02cba798b41436b60d843444
+- zstd-libs 1.5.7-r2: BSD-3-Clause OR GPL-2.0-or-later; origin zstd, aports 3c6e2ee2b16f403d53eab39c4426eb61f003c322
 
 Corresponding packaging, patches, configurations and upstream sources are distributed at [sources/index.html](sources/index.html).
 
@@ -8470,6 +8506,33 @@ SOFTWARE.
 
 ```
 
+## asn1 0.2.6
+
+### LICENSE
+
+```text
+Copyright (c) 2011 Mark Cavage, All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE
+
+```
+
 ## async 3.2.6
 
 ### LICENSE
@@ -8899,6 +8962,80 @@ SOFTWARE.
 
 ```
 
+## bcrypt-pbkdf 1.0.2
+
+### LICENSE
+
+```text
+The Blowfish portions are under the following license:
+
+Blowfish block cipher for OpenBSD
+Copyright 1997 Niels Provos <provos@physnet.uni-hamburg.de>
+All rights reserved.
+
+Implementation advice by David Mazieres <dm@lcs.mit.edu>.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+
+The bcrypt_pbkdf portions are under the following license:
+
+Copyright (c) 2013 Ted Unangst <tedu@openbsd.org>
+
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+
+Performance improvements (Javascript-specific):
+
+Copyright 2016, Joyent Inc
+Author: Alex Wilson <alex.wilson@joyent.com>
+
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+```
+
 ## brace-expansion 5.0.12
 
 ### LICENSE
@@ -8985,6 +9122,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+```
+
+## buildcheck 0.0.7
+
+### LICENSE
+
+```text
+Copyright Brian White. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
 ```
 
 ## cacheable 2.5.0
@@ -9824,6 +9987,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
+```
+
+## cpu-features 0.0.10
+
+### LICENSE
+
+```text
+Copyright Brian White. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
 ```
 
 ## cross-spawn 7.0.6
@@ -15805,6 +15994,23 @@ SOFTWARE.
 
 ```
 
+## nan 2.30.0
+
+### LICENSE.md
+
+```text
+The MIT License (MIT)
+
+Copyright (c) 2018 [NAN contributors](<https://github.com/nodejs/nan#wg-members--collaborators>)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+```
+
 ## nanoid 3.3.20
 
 ### LICENSE
@@ -18081,6 +18287,35 @@ SOFTWARE.
 
 ```
 
+## safer-buffer 2.1.2
+
+### LICENSE
+
+```text
+MIT License
+
+Copyright (c) 2018 Nikita Skovoroda <chalkerx@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+```
+
 ## scheduler 0.28.0
 
 ### LICENSE
@@ -18851,6 +19086,32 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ```
 
+## ssh2 1.17.0
+
+### LICENSE
+
+```text
+Copyright Brian White. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+```
+
 ## stop-iteration-iterator 1.1.0
 
 ### LICENSE
@@ -19315,6 +19576,38 @@ INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
 LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
+```
+
+## tweetnacl 0.14.5
+
+### LICENSE
+
+```text
+This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
+
+In jurisdictions that recognize copyright laws, the author or authors
+of this software dedicate any and all copyright interest in the
+software to the public domain. We make this dedication for the benefit
+of the public at large and to the detriment of our heirs and
+successors. We intend this dedication to be an overt act of
+relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to <http://unlicense.org>
+
 ```
 
 ## type-check 0.4.0
@@ -23661,6 +23954,34 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+```
+
+## ws 8.22.1
+
+### LICENSE
+
+```text
+Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
+Copyright (c) 2013 Arnout Kazemier and contributors
+Copyright (c) 2016 Luigi Pinca and contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ```
 

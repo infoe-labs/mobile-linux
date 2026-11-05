@@ -1,0 +1,45 @@
+#!/bin/sh
+# Small explicit CLI; arguments never become shell source.
+port=22
+user=root
+identity=
+tty=
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -p|-l|-i)
+      [ "$#" -ge 2 ] || { echo 'ssh: option needs a value' >&2; exit 2; }
+      case "$1" in -p) port=$2;; -l) user=$2;; -i) identity=$2;; esac
+      shift 2;;
+    -t|-T) tty=$1; shift;;
+    --) shift; break;;
+    -*) echo 'Usage: ssh [-p port] [-l user] [-i key] [-t|-T] [user@]host [command...]' >&2; exit 2;;
+    *) break;;
+  esac
+done
+[ "$#" -gt 0 ] || { echo 'Usage: ssh [-p port] [-l user] [-i key] [-t|-T] [user@]host [command...]' >&2; exit 2; }
+host=$1; shift
+case "$host" in *@*) user=${host%@*}; host=${host##*@};; esac
+case "$host" in ''|*[!a-zA-Z0-9.:-]*|-*) echo 'ssh: invalid host' >&2; exit 2;; esac
+case "$user" in ''|*[!a-zA-Z0-9._-]*|-*) echo 'ssh: invalid user' >&2; exit 2;; esac
+case "$port" in ''|*[!0-9]*|??????*) echo 'ssh: invalid port' >&2; exit 2;; esac
+[ "$port" -ge 1 ] && [ "$port" -le 65535 ] || exit 2
+set -- "$host" "$@"
+[ -z "$identity" ] || set -- -i "$identity" "$@"
+[ -z "$tty" ] || set -- "$tty" "$@"
+export LD_LIBRARY_PATH=/opt/pocket-ssh/lib:/opt/pocket-ssh/usr/lib
+# Own the transport lifetime even when dbclient terminates its proxy abruptly.
+lock=/run/pocket-ssh
+mkdir "$lock" 2>/dev/null || { echo 'ssh: another connection is active' >&2; exit 1; }
+cleanup() {
+  trap - EXIT HUP INT TERM
+  for role in reader writer proxy; do
+    if [ -f "$lock/$role" ]; then
+      read -r pid < "$lock/$role"
+      kill "$pid" 2>/dev/null || true
+    fi
+  done
+  rm -rf "$lock"
+}
+trap cleanup EXIT
+trap 'exit 1' HUP INT TERM
+/opt/pocket-ssh/usr/bin/dbclient -J "/bin/sh /opt/pocket-ssh/proxy $host $port" -p "$port" -l "$user" "$@"

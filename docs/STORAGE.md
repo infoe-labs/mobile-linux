@@ -82,3 +82,22 @@ snapshots can be deleted. Delete model clears only the app/base-scoped model
 cache, including its inference runtime. No terminal or prompt logging is added.
 Inference runtime URLs include the exact locked ONNX version so app upgrades do
 not reuse incompatible compiled binaries. Model weight revisions are pinned.
+
+SSH bridge settings are memory-only and are not cached. Guest SSH files and
+shell history follow existing disk/snapshot retention; disconnecting does not
+scrub guest memory. See [SSH retention](SSH.md).
+
+Package downloads have a separate `packages` cache (version 1), populated only
+by an explicit offline-bundle action. Each action replaces that cache, with a
+200 MiB bundle limit and 30-day expiry; cleanup runs at startup, hourly while
+open, and on access. Installed APKs and Go build caches follow guest-disk retention.
+The disk expands from 64 to 512 MiB without changing block offsets or deleting
+the original stored seed. See [migration and deletion details](PACKAGES.md).
+
+Snapshot binary payloads use a `binaryStorage: chunks-v1` record marker and
+8 MiB IndexedDB records to avoid Chromium's serialized-value limit and WebKit
+Blob-storage failures. A single transaction saves the descriptor and every chunk;
+interrupted writes roll back together. Deletion removes all payload chunks.
+The reader accepts earlier ArrayBuffer records without rewriting or deleting them;
+existing virtual-hardware compatibility checks still apply. Snapshot namespace,
+retention, explicit deletion, and exported backup format remain unchanged.

@@ -550,3 +550,22 @@ h1 {
   padding: 4px 6px;
   color: var(--muted);
 }
+
+.ssh-approval {
+  position: fixed;
+  z-index: 60;
+  inset: max(1rem, env(safe-area-inset-top)) 1rem auto;
+  max-height: calc(var(--app-height) - 2rem);
+  overflow: auto;
+  background: var(--bg);
+  box-shadow: 0 8px 40px #0008;
+}
+.ssh-approval label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+}
+.ssh-approval input {
+  width: 100%;
+}

@@ -16,7 +16,7 @@ export function exportSnapshot(snap: Snapshot) {
   download(new Blob(['APSNAP01', length, header, state, disk]), 'alpine-pocket.snapshot');
 }
 export async function importSnapshot(file: File): Promise<Snapshot> {
-  if (file.size > 512 * 1024 * 1024) throw new Error('Snapshot exceeds 512 MiB import limit.');
+  if (file.size > 1536 * 1024 * 1024) throw new Error('Snapshot exceeds 1536 MiB import limit.');
   const bytes = await file.arrayBuffer();
   if (new TextDecoder().decode(bytes.slice(0, 8)) !== 'APSNAP01')
     throw new Error('Invalid snapshot signature.');
@@ -28,7 +28,7 @@ export async function importSnapshot(file: File): Promise<Snapshot> {
     !Number.isSafeInteger(meta.stateBytes) ||
     !Number.isSafeInteger(meta.diskBytes) ||
     meta.stateBytes < 1 ||
-    meta.diskBytes !== 67108864 ||
+    ![67108864, 536870912].includes(meta.diskBytes) ||
     12 + size + meta.stateBytes + meta.diskBytes !== bytes.byteLength
   )
     throw new Error('Invalid snapshot lengths.');
