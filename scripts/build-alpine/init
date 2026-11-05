@@ -23,6 +23,11 @@ cp -a /pocket-ssh/. /newroot/opt/pocket-ssh/
 if [ ! -e /newroot/usr/local/bin/ssh ] && [ ! -L /newroot/usr/local/bin/ssh ]; then
   ln -s /opt/pocket-ssh/ssh /newroot/usr/local/bin/ssh
 fi
+for tool in browser-fetch curl wget git; do
+  if [ ! -e "/newroot/usr/local/bin/$tool" ] && [ ! -L "/newroot/usr/local/bin/$tool" ]; then
+    case "$tool" in browser-fetch) ln -s /opt/pocket-ssh/browser-fetch "/newroot/usr/local/bin/$tool";; *) ln -s /opt/pocket-ssh/browser-command "/newroot/usr/local/bin/$tool";; esac
+  fi
+done
 mkdir -p /newroot/opt/pocket-go-tmp
 mount -t tmpfs -o size=128m,mode=1777 tmpfs /newroot/opt/pocket-go-tmp
 cat >/newroot/etc/profile.d/pocket-packages.sh <<'PROFILE'

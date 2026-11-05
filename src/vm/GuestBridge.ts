@@ -1,3 +1,5 @@
+import { downloads } from '../lib/downloads/requests.ts';
+import { decode } from './protocol.ts';
 import { requestLine, type Operation } from './protocol.ts';
 export class GuestBridge {
   ready = false;
@@ -30,6 +32,14 @@ export class GuestBridge {
     if (id === '0' && status === 'READY' && payload === '1') {
       this.ready = true;
       this.onReady();
+      return;
+    }
+    if (id === '0' && status === 'DOWNLOAD') {
+      try {
+        downloads.request(decode(payload));
+      } catch {
+        /* Invalid guest request. */
+      }
       return;
     }
     const p = this.pending.get(Number(id));

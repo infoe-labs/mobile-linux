@@ -167,3 +167,17 @@ test('streamed disk inflation checks exact size and clears expanded space', asyn
   await assert.rejects(() => inflateDisk(compressed, new ArrayBuffer(2)), /exceeds/);
   await assert.rejects(() => inflateDisk(compressed, new ArrayBuffer(4)), /invalid size/);
 });
+
+test('guest download requests accept HTTPS without credentials and make no automatic fetch', async () => {
+  const { downloads } = await import('../src/lib/downloads/requests.ts');
+  downloads.clear();
+  downloads.request('http://download.example.test/file');
+  assert.equal(downloads.url, '');
+  downloads.request('https://user:synthetic@download.example.test/file');
+  assert.equal(downloads.url, '');
+  downloads.request('https://download.example.test/file');
+  assert.equal(downloads.url, 'https://download.example.test/file');
+  downloads.request('https://other.example.test/file');
+  assert.equal(downloads.url, 'https://download.example.test/file');
+  downloads.clear();
+});

@@ -1,3 +1,4 @@
+import BrowserDownload from './components/BrowserDownload';
 import PackagePanel from './components/PackagePanel';
 import SSHConnection from './components/ssh/SSHConnection';
 import Files from './screens/Files';
@@ -119,6 +120,7 @@ export default function App() {
     <main className="app">
       <SSHConnection />
       <PackagePanel />
+      <BrowserDownload />
       <header className="topbar">
         <a
           className="brand"

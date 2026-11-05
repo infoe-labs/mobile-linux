@@ -101,3 +101,7 @@ background execution guarantee, automatic snapshot, or validated mobile AI tier.
 Public contributions must use an explicitly approved pseudonymous Git identity,
 synthetic test data and PRs. Keep personal machine paths, usernames, hostnames,
 real emails, secrets and raw user content out of commits and public artifacts.
+
+Browser-assisted HTTPS downloads: supported curl/wget/git failures and the explicit
+`browser-fetch URL` helper can request approved host downloads or manual imports.
+See [download coverage, consent and limits](docs/DOWNLOADS.md).
